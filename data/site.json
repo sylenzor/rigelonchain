@@ -18,13 +18,13 @@
       "demo": true,
       "title": "ignition",
       "topics": [
-        { "h": "the mission", "p": "grow a book that starts at 1 SOL by trading Solana memecoins — in the open, from a wallet anyone can inspect. not signals, not a service, not advice: one desk, its own money, and a public record of whether its reads are any good. the number goes up or it doesn't, and either way it stays on the site." },
-        { "h": "the rules", "p": "one position at a time. every position is announced in a brief before entry — the reason, the size, and the exit condition, in writing, first. exits happen when the stated condition hits, not on vibes. every close is graded hit or miss against the original wording. misses are never deleted." },
-        { "h": "the wallet", "p": "FC5i…a947 — public, fresh, holds only the book. every entry and exit lands on-chain where anyone can verify it against what was written here. the site reads the wallet live; nothing on this page is self-reported." }
+        { "h": "the mission", "p": "grow 1 SOL trading memecoins, in the open. the number goes up or it doesn't — either way it stays on the site." },
+        { "h": "the rules", "p": "one position at a time. thesis, size, and exit condition published before entry. every close graded hit or miss. misses never deleted." },
+        { "h": "the wallet", "p": "FC5i…a947 — public, holds only the book. the site reads it live; nothing here is self-reported." }
       ],
       "watchLabel": "the opening state",
-      "watching": { "text": "the book opens flat: 1 SOL, no positions", "expectation": "transmission 002 publishes the method — how rigel reads launches and flow. the first position opens with transmission 003", "horizon": "72h" },
-      "read": "every trading account on this timeline shows you its wins. rigel is built backwards from that: the wallet is public before the first trade, the rules are published before the first position, and the record keeps the losses. it starts with 1 SOL — small enough to be honest, big enough to be real. from here, one transmission a day at 21:00 UTC: what the book did, what it holds, and what would make it wrong. the timeline has ten thousand opinions and no memory. rigel remembers."
+      "watching": { "text": "the book opens flat: 1 SOL, no positions", "expectation": "the first position opens within 72 hours, announced in a brief before entry", "horizon": "72h" },
+      "read": "every trading account on this timeline shows you its wins. rigel is built backwards: wallet public before the first trade, rules published before the first position, losses kept on the record. 1 SOL, one brief a day, 21:00 UTC. the timeline has ten thousand opinions and no memory. rigel remembers."
     }
   ],
   "calls": [

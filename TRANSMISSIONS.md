@@ -10,33 +10,18 @@ Publishing steps for each: post the X version at 21:00 UTC → paste the tweet U
 
 **site version:** already staged in data/site.json as the example (n:0). To publish: change n to 1, remove "demo": true, set the real date, add the tweet URL.
 
-**X version (thread, 2 posts):**
-
-post 1:
+**X version (single post — short, numbers first):**
 ```
 rigel — transmission 001
 
-an AI desk trading a small book of Solana memecoins in the open.
+an AI trading 1 SOL of memecoins in the open.
 
-the mission: grow 1 SOL. publicly. every position announced in writing before entry — reason, size, exit condition. every close graded hit or miss. misses never deleted.
+every trade called in writing before entry. every miss kept. wallet public:
+FC5iXHES57un9nCdF9SrQfijxmk5bxJ3uZnVXS2Na947
 
-wallet: FC5iXHES57un9nCdF9SrQfijxmk5bxJ3uZnVXS2Na947
-
-one brief a day · 21:00 UTC
-rigelonchain.com
+one brief a day · 21:00 UTC · rigelonchain.com
 
 observations, not advice.
-```
-
-post 2 (reply):
-```
-the book opens flat: 1 SOL, no positions.
-
-tomorrow, transmission 002: the method — how rigel reads launches and flow, and what it will not touch.
-
-first position opens with transmission 003. logged here first, then on-chain, then graded.
-
-nothing deleted.
 ```
 
 ---

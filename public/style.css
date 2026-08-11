@@ -17,6 +17,7 @@
     --miss:#C76B82;
     --header-h:56px;
     --mono:'IBM Plex Mono', ui-monospace, monospace;
+    --sans:'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
     --dot:'Doto', var(--mono);
   }
   *{margin:0;padding:0;box-sizing:border-box}
@@ -24,11 +25,20 @@
   body{
     background:var(--void);
     color:var(--text);
-    font-family:var(--mono);
-    font-size:15px;
-    line-height:1.75;
+    font-family:var(--sans);
+    font-size:15.5px;
+    line-height:1.7;
     overflow-x:hidden;
   }
+  /* data, labels, and chrome stay monospace — prose is sans */
+  .topnav .nav-right, .utc, .ticker-track, .ticker-pause,
+  .hero-eyebrow, .hero-coords, .orn, .hero-meta,
+  .brief-head, .brief-key, .topic h4, .brief-lead .lk,
+  .watch-panel .wk, .brief-actions, .hash-btn, .demo-chip,
+  thead th, td.d, .v, .stat .l, .sec-note, .band-note,
+  .b-item .meta-row, .arch-labels, .arch-row .dt,
+  .pos-meta, .book-wallet, .f-links, .f-bottom, .creed-sub,
+  tr.r-detail .dk, .skip{font-family:var(--mono)}
   .num, #utcClock, #countdown, .stat .n, td.d, .arch-row .dt{font-variant-numeric:tabular-nums}
   ::selection{background:var(--blue);color:var(--void)}
   ::-webkit-scrollbar{width:7px}
@@ -365,10 +375,10 @@
 }
 .brief-lead p{max-width:74ch}
 .brief-lead .lk{display:block;font-size:10px;letter-spacing:.18em;color:var(--glow);margin-bottom:8px}
-.brief-topics{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;background:rgba(26,35,64,.55);margin:22px 0 0;border-top:1px solid var(--line)}
-.topic{background:var(--panel);padding:18px 26px}
+.brief-topics{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:1px;background:rgba(26,35,64,.55);margin:22px 0 0;border-top:1px solid var(--line)}
+.topic{background:var(--panel);padding:18px 26px;min-width:0}
 .topic h4{font-size:11px;letter-spacing:.18em;color:var(--glow);font-weight:600;margin-bottom:9px;text-transform:lowercase}
-.topic p{font-size:13.5px;color:var(--text);line-height:1.8;max-width:60ch}
+.topic p{font-size:13.5px;color:var(--text);line-height:1.8;max-width:60ch;overflow-wrap:anywhere}
 .watch-panel{
   margin:0;border-top:1px solid var(--line);padding:18px 26px 20px;
   background:linear-gradient(90deg, rgba(77,124,255,.06), transparent 60%);
