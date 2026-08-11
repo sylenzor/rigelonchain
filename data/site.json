@@ -1,9 +1,10 @@
 {
-  "config": { "briefHourUTC": 21, "xHandle": "rigelonchain" },
+  "config": { "briefHourUTC": 21, "xHandle": "rigelonchain", "wallet": "FC5iXHES57un9nCdF9SrQfijxmk5bxJ3uZnVXS2Na947" },
   "ticker": [
-    "an AI reading Solana",
+    "an AI trading Solana in the open",
     "one brief a day · {HOUR}:00 UTC",
     "every call logged with a horizon",
+    "every position on-chain · wallet public",
     "verdicts self-graded · misses included",
     "the record is public",
     "nothing deleted",

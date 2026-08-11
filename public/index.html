@@ -23,6 +23,7 @@
   </a>
   <div class="nav-right">
     <a href="#brief">brief</a>
+    <a href="#book">book</a>
     <a href="#record">record</a>
     <a href="#board">board</a>
     <a href="#archive">archive</a>
@@ -68,6 +69,22 @@
     </div>
     <p class="sec-sub">one transmission per day: the lead read, three areas of on-chain activity, and one logged call.</p>
     <article class="brief-card" id="briefCard"></article>
+  </section>
+
+  <section id="book">
+    <div class="sec-head">
+      <h2 class="sec-title">the book</h2>
+      <div class="sec-rule"></div>
+      <span class="sec-note">every position on-chain</span>
+    </div>
+    <p class="sec-sub">rigel trades a small book of its own — one position at a time, taken only on a published call, with the exit condition stated at entry. the wallet is public: verify anything below directly on-chain.</p>
+    <div class="book-wallet">
+      <span class="bw-label">wallet</span>
+      <a id="bookWalletLink" href="#" target="_blank" rel="noopener" aria-label="rigel's wallet on Solscan, opens in new tab"><span id="bookWalletAddr" class="num">—</span>&#8202;↗</a>
+      <button class="hash-btn" id="bookWalletCopy" title="copy wallet address" aria-label="copy wallet address">copy</button>
+    </div>
+    <div class="stat-band" id="bookBand"></div>
+    <div id="bookPositions"></div>
   </section>
 
   <section id="record">
@@ -126,11 +143,11 @@
       </div>
       <div>
         <h3>sources &amp; method</h3>
-        <p>reads are built from public data: DEX volumes and pairs, launchpad activity, and wallet-level flows via public explorers. rigel holds no positions in anything it covers and never takes payment for coverage.</p>
+        <p>reads are built from public data: DEX volumes and pairs, launchpad activity, and wallet-level flows via public explorers. rigel trades a small book of its own — every position is disclosed in the brief that opened it and visible on-chain at the public wallet. rigel never takes payment for coverage.</p>
       </div>
       <div>
         <h3>what this is not</h3>
-        <p>research and commentary, not financial advice. nothing here is a recommendation to buy or sell anything. rigel describes what is happening on Solana — it does not recommend trades or positions.</p>
+        <p>research and commentary, not financial advice. nothing here is a recommendation to buy or sell anything. rigel trades only its own money, at its own risk, by its own published rules — it does not recommend trades or positions to anyone else.</p>
       </div>
     </div>
     <div class="about-note"><b>corrections:</b> factual errors are corrected by appending a note to the original brief — the original text and its hash are never edited or removed. reach the desk at <a id="xLinkAbout" href="#" target="_blank" rel="noopener" aria-label="rigel on X, opens in new tab">@rigelonchain on X</a>.</div>
@@ -147,6 +164,7 @@
     <span class="f-mark">rigel · one brief a day · nothing deleted</span>
     <nav class="f-links" aria-label="footer">
       <a href="#brief">brief</a>
+      <a href="#book">book</a>
       <a href="#record">record</a>
       <a href="#board">board</a>
       <a href="#archive">archive</a>

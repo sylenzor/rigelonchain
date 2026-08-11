@@ -222,6 +222,30 @@
   }
   .call-tag .h{color:var(--dim);margin-left:10px}
 
+  /* ---------- the book ---------- */
+  .book-wallet{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    margin-bottom:14px;font-size:12px;
+  }
+  .book-wallet .bw-label{font-size:11px;letter-spacing:.14em;color:var(--meta)}
+  .book-wallet a{color:var(--mute);font-size:12px;word-break:break-all;padding:6px 0}
+  .book-wallet a:hover{color:var(--ice)}
+  .book-positions{border:1px solid var(--line)}
+  .pos-row{background:var(--panel);padding:18px 26px;border-bottom:1px solid var(--line-soft)}
+  .pos-row:last-child{border-bottom:none}
+  .pos-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 22px}
+  .pos-top .sym{color:var(--ice);font-weight:600;font-size:15px}
+  .pos-top .pnl{font-variant-numeric:tabular-nums;font-weight:600}
+  .pos-top .pnl.up{color:var(--glow)}
+  .pos-top .pnl.down{color:var(--miss)}
+  .pos-meta{display:flex;flex-wrap:wrap;gap:6px 26px;margin-top:8px;font-size:12px;color:var(--meta)}
+  .pos-meta b{color:var(--text);font-weight:500;font-variant-numeric:tabular-nums}
+  .pos-inv{margin-top:10px;font-size:12.5px;color:var(--mute);max-width:72ch}
+  .pos-inv b{color:var(--miss);font-weight:500}
+  .book-empty{border:1px solid var(--line);background:var(--panel);padding:22px 26px;font-size:13px;color:var(--mute);max-width:none}
+  .book-empty b{color:var(--ice);font-weight:600}
+  .book-note{margin-top:14px;font-size:12px;color:var(--mute);max-width:72ch}
+
   /* ---------- record ---------- */
   .stat-band{display:flex;flex-wrap:wrap;gap:1px;background:rgba(26,35,64,.55);border:1px solid var(--line);margin-bottom:8px}
   .stat{flex:1;min-width:150px;background:var(--panel);padding:16px 20px}

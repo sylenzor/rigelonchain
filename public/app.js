@@ -40,6 +40,7 @@ fetch("/api/site").then(r => r.json()).then(data => {
   renderBoard();
   renderArchive();
   buildTicker();
+  renderBook();
 }).catch(() => {
   document.body.insertAdjacentHTML("beforeend",
     '<div style="position:fixed;inset:auto 20px 20px;color:#B85C72;font-size:12px">could not reach /api/site — is the server running? (npm start)</div>');
@@ -81,7 +82,7 @@ function wire(){
       }
     });
   }, { rootMargin:"-30% 0px -60% 0px" });
-  ["brief","record","board","archive","about"].forEach(id => {
+  ["brief","book","record","board","archive","about"].forEach(id => {
     const el = document.getElementById(id); if(el) io.observe(el);
   });
 })();
@@ -199,6 +200,70 @@ function renderRecord(){
     row.addEventListener("click", toggle);
     row.addEventListener("keydown", e => { if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggle(); } });
   });
+}
+
+/* ---------- the book ---------- */
+const usd = v => v >= 100 ? "$" + v.toFixed(0) : v >= 1 ? "$" + v.toFixed(2) : "$" + v.toPrecision(3);
+const solFmt = v => v.toFixed(3).replace(/\.?0+$/, "") + " SOL";
+
+async function renderBook(){
+  const band = $("bookBand"), posEl = $("bookPositions");
+  let B;
+  try{ B = await (await fetch("/api/book")).json(); }
+  catch(e){ B = { error: "unreachable" }; }
+
+  if(B.error){
+    band.innerHTML = "";
+    posEl.innerHTML = `<div class="book-empty">the book is temporarily unreadable (chain data unavailable). holdings are always verifiable directly on-chain at the wallet above.</div>`;
+    const meta = SITE.config.wallet;
+    if(meta){ wireWallet(meta); }
+    return;
+  }
+
+  wireWallet(B.wallet);
+  const pnlSOL = (B.startedSOL != null && B.equitySOL != null) ? B.equitySOL - B.startedSOL : null;
+  const pnlPct = (pnlSOL != null && B.startedSOL) ? (pnlSOL / B.startedSOL) * 100 : null;
+  const sign = v => (v >= 0 ? "+" : "");
+  band.innerHTML = `
+    <div class="stat"><div class="n num">${B.equitySOL != null ? B.equitySOL.toFixed(3) : "—"}</div><div class="l">equity (SOL)</div></div>
+    <div class="stat"><div class="n num">${usd(B.equityUSD || 0)}</div><div class="l">equity (USD)</div></div>
+    <div class="stat"><div class="n num ${pnlSOL > 0 ? "blue" : pnlSOL < 0 ? "red" : ""}">${pnlPct != null ? sign(pnlPct) + pnlPct.toFixed(1) + "%" : "—"}</div><div class="l">since start (${B.startedSOL ?? "—"} SOL)</div></div>
+    <div class="stat"><div class="n num">${B.positions.length}</div><div class="l">open positions</div></div>`;
+
+  if(!B.positions.length){
+    posEl.innerHTML = B.sol > 0.001
+      ? `<div class="book-empty"><b>book funded: ${solFmt(B.sol)}</b> · no open positions. the first position opens with transmission 001 — stated in the brief first, then taken, then graded.</div>`
+      : `<div class="book-empty"><b>wallet created</b> · awaiting the opening 1 SOL. the book goes live with transmission 001.</div>`;
+  } else {
+    posEl.innerHTML = `<div class="book-positions">` + B.positions.map(p => `
+      <div class="pos-row">
+        <div class="pos-top">
+          <span class="sym">${p.symbol}</span>
+          <span class="pnl num ${p.pnlPct == null ? "" : p.pnlPct >= 0 ? "up" : "down"}">${p.pnlPct == null ? "" : sign(p.pnlPct) + p.pnlPct.toFixed(1) + "%"}</span>
+          <span style="margin-left:auto;color:var(--meta);font-size:12px">${usd(p.valueUSD)}</span>
+        </div>
+        <div class="pos-meta">
+          ${p.entryDate ? `<span>opened <b>${fmtDate(p.entryDate)}</b></span>` : ""}
+          ${p.sizeSOL ? `<span>size <b>${solFmt(p.sizeSOL)}</b></span>` : ""}
+          ${p.entryPriceUSD ? `<span>entry <b>${usd(p.entryPriceUSD)}</b></span>` : ""}
+          <span>now <b>${usd(p.priceUSD)}</b></span>
+          ${p.brief ? `<span>per <b>transmission ${pad3(p.brief)}</b></span>` : ""}
+        </div>
+        ${p.invalidation ? `<div class="pos-inv"><b>exits if:</b> ${p.invalidation}</div>` : ""}
+      </div>`).join("") + `</div>`;
+  }
+  posEl.insertAdjacentHTML("afterend", "");
+  const note = document.querySelector(".book-note");
+  if(!note) posEl.insertAdjacentHTML("afterend",
+    `<p class="book-note">positions are opened only on a call published in that day's brief, sized from a ${B.startedSOL ?? 1} SOL starting book, with the exit condition written before entry. realized results move to the record. updated ${B.updated ? new Date(B.updated).toUTCString().slice(17, 22) + " UTC" : "—"}.</p>`);
+}
+
+function wireWallet(addr){
+  if(!addr) return;
+  const a = $("bookWalletLink"), t = $("bookWalletAddr"), c = $("bookWalletCopy");
+  if(t) t.textContent = addr.slice(0, 4) + "…" + addr.slice(-4);
+  if(a) a.href = "https://solscan.io/account/" + addr;
+  if(c && !c.dataset.wired){ c.dataset.wired = "1"; c.addEventListener("click", () => copyText(c, addr)); }
 }
 
 /* ---------- board ---------- */

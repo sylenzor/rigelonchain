@@ -4,7 +4,16 @@ This file orients Claude (Cowork / Claude Code) on the rigel project. Read fully
 
 ## what rigel is
 
-rigel is an AI-assisted analysis desk covering the **Solana** blockchain, operated by Maksim with human oversight. Once a day it publishes a "brief": a short, structured read on capital flows, new token launches, and notable wallet behavior, drawn from public on-chain data. Every brief logs one "call" — a specific, falsifiable expectation with a time horizon — graded hit/miss in public. The tagline and product promise: **one brief a day. nothing deleted.**
+rigel is an AI trading desk covering the **Solana** blockchain (memecoin-forward), operated by Maksim with human oversight. Once a day it publishes a "brief": a short, structured read on capital flows, new token launches, and notable wallet behavior, drawn from public on-chain data. Every brief logs one "call" — a specific, falsifiable expectation with a time horizon — graded hit/miss in public. **As of aug 11 2026, rigel also trades a small real book of its own** (starting 1 SOL) from a public wallet: one position at a time, taken only on a published call, exit condition written before entry, everything verifiable on-chain. The tagline and product promise: **one brief a day. nothing deleted.**
+
+Positioning vs omo (the FOMO-app AI trader that inspired this): omo is impulse — it chases the tape all day and you watch. rigel is thesis — it publishes first and trades second, once a day at a fixed hour, and you can audit the reasoning and keep score. "omo chases, rigel waits."
+
+**The book (trading rules, strict):**
+- Public wallet: FC5iXHES57un9nCdF9SrQfijxmk5bxJ3uZnVXS2Na947 (fresh, holds only the book; shown on the site with Solscan link)
+- The PRIVATE KEY never appears in the repo, in chat, in Claude sessions, or on the server. Maksim signs everything. Claude never asks for it.
+- One position at a time (max), sized from the 1 SOL book. A position may only be opened on a call published in that day's brief, and its "exits if" invalidation must be written in the brief BEFORE entry.
+- Exits happen when the stated invalidation or horizon hits — not on vibes. Every close is graded in the record and moved to realized[] in data/book.json.
+- data/book.json = entry metadata (why each position exists); holdings/prices are read live on-chain via /api/book (server.js). Never fake or hand-edit balances.
 
 Named after Rigel, the blue giant star at Orion's foot (β Orionis). The X account is **@rigelonchain**.
 
@@ -27,14 +36,17 @@ Named after Rigel, the blue giant star at Orion's foot (β Orionis). The X accou
 ## the daily brief format (fixed skeleton)
 
 ```
-rigel — [mon] [day]
-flows: [1-2 lines: sol/majors movement, dex volume vs yesterday, anything unusual]
-launches: [1-2 lines: what graduated, what's holding volume vs churn]
+rigel — [day] [mon] [year]
+flows: [1-2 lines: SOL/majors movement, DEX volume vs yesterday, anything unusual]
+launches: [1-2 lines: what graduated, what's holding volume vs churn — memecoin-forward]
 wallets: [1-2 lines: notable accumulation/distribution, by behavior, never by name]
-watching: [one item] · expectation: [falsifiable outcome] · horizon: [e.g. 48h]
+position: [asset · size in SOL · entry] · exits if: [pre-committed invalidation] · horizon: [e.g. 48h]
+  (or "position: none — [one line why]" on days rigel stays flat; staying flat is a call too)
 read of the day: [ONE paragraph, the sharpest observation — written last]
 observations, not advice.
 ```
+
+The "position:" line replaces the old "watching:" line: the call is now backed by the book. Format details: brief goes into data/site.json (briefs[] + calls[]), position entry metadata into data/book.json positions[].
 
 Posted to X at the fixed hour daily, then mirrored into data/site.json. The streak is sacred: same hour, every day, no gaps.
 
@@ -46,11 +58,13 @@ Posted to X at the fixed hour daily, then mirrored into data/site.json. The stre
 
 ## hard boundaries (do not cross)
 
-- No financial advice, price predictions framed as recommendations, or "buy/sell" language anywhere.
-- rigel holds no positions in anything it covers and never takes payment for coverage — keep it true.
-- The site/leaderboard/briefs stay FREE — no token gating ever (legal posture: Ontario, Canada; gating + token = securities risk).
+- No financial advice, no recommendations to readers, no "you should buy/sell" language anywhere. rigel trades ONLY its own book, at its own risk, by its own published rules, and says so plainly.
+- Every position rigel takes must be disclosed in the brief that opened it and visible on-chain — no hidden trades, no trading anything it hasn't covered in writing. rigel never takes payment for coverage.
+- The site/record/briefs stay FREE — no token gating ever (legal posture: Ontario, Canada; gating + token = securities risk).
+- Trading gains/losses are taxable in Canada (business income or capital gains) — keep records of every trade; remind Maksim periodically. He should confirm the posture with an accountant.
 - When the token era comes: fair launch, no presale, no profit promises. Creator fees are taxable business income in Canada — remind Maksim to keep records.
 - Never name/accuse individuals in wallet commentary — describe behavior patterns only.
+- Wallet private key: never in repo/chat/server. Non-negotiable.
 
 ## tech stack
 
@@ -71,12 +85,12 @@ Posted to X at the fixed hour daily, then mirrored into data/site.json. The stre
 
 ## roadmap (in order)
 
-1. **Choose the daily hour. Write and publish transmission 01.** ← everything blocks on this
-2. 14 days of daily briefs + reply-guy distribution (reply with precise data under big accounts; never self-promo)
-3. Site live on Render/Railway + GitHub repo (repo history doubles as the "nothing deleted" proof)
+1. **Fund wallet with 1 SOL (address above). Write and publish transmission 001 with the first position.** ← everything blocks on this. Site, domain, deploy, book section: DONE.
+2. 14 days of daily briefs + positions + reply-guy distribution (reply with precise data under big accounts; never self-promo)
+3. Automate execution (Jupiter swaps via a bot Maksim runs locally with his key) + streamed decision log — the omo-style terminal, phase 2, only after the manual loop has run ~2 weeks clean
 4. Launch gate check → $RIGEL fair launch on pump.fun ONLY if real audience exists
-5. Later features: per-brief permalink pages, hit-rate sparkline, OG image generator, automation of data gathering (the "rigel no longer needs me to type" lore moment)
+5. Later features: per-brief permalink pages, equity-curve sparkline, OG image generator, automation of data gathering (the "rigel no longer needs me to type" lore moment)
 
 ## history in one paragraph (for context)
 
-This project emerged after several failed cold token launches (The Intern, $MARTIN) taught the core lesson: distribution/audience is the bottleneck, not concepts. rigel is the deliberate answer — build the product and audience FIRST (omo-style transparent AI desk, but analysis instead of trading), token later. The recurring failure mode to guard against: endless polishing/pivoting instead of shipping the daily brief. If Maksim asks for new features or new ideas before transmission 01 exists, gently point at this line.
+This project emerged after several failed cold token launches (The Intern, $MARTIN) taught the core lesson: distribution/audience is the bottleneck, not concepts. rigel is the deliberate answer — build the product and audience FIRST, token later. It began as pure analysis ("omo-style transparent AI desk, but analysis instead of trading"); on aug 11 2026 Maksim decided rigel should also trade a small real book, omo-inspired but thesis-first (publish, then trade, then grade) rather than impulse-driven. The recurring failure mode to guard against: endless polishing/pivoting instead of shipping the daily brief. The design is DONE, the site is LIVE, the book infrastructure is BUILT — if Maksim proposes more features or new directions before transmission 001 exists, gently point at this line. Transmission 001 is the only remaining launch blocker, and has been since day one.
