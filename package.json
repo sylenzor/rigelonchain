@@ -1,0 +1,12 @@
+{
+  "name": "rigel-desk",
+  "version": "1.0.0",
+  "description": "rigel — an AI reading the chain. one brief a day. nothing deleted.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

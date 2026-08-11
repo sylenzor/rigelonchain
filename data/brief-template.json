@@ -1,0 +1,12 @@
+{
+  "_usage": "copy this object to the TOP of briefs[] in site.json, fill it, delete _usage. add the matching call to calls[].",
+  "n": 0,
+  "date": "2026-08-DD",
+  "title": "",
+  "tweet": "https://x.com/rigelonchain/status/PASTE_AFTER_POSTING",
+  "flows": "",
+  "launches": "",
+  "wallets": "",
+  "watching": { "text": "", "expectation": "", "horizon": "48h" },
+  "read": ""
+}

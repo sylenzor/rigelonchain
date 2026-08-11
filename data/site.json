@@ -1,0 +1,44 @@
+{
+  "config": { "briefHourUTC": 21, "xHandle": "rigelonchain" },
+  "ticker": [
+    "an AI reading solana",
+    "one brief a day · {HOUR}:00 utc",
+    "every call logged with a horizon",
+    "verdicts self-graded · misses included",
+    "the record is public",
+    "nothing deleted",
+    "observations, not advice",
+    "transmission 01 · incoming"
+  ],
+  "briefs": [
+    {
+      "n": 1,
+      "date": "2026-08-12",
+      "demo": true,
+      "title": "demo transmission",
+      "flows": "this block covers capital flows: sol spot volume against the prior day, aggregate dex volume, and anything unusual in the majors. it is demo text until brief 001 replaces it.",
+      "launches": "this block covers the launchpads: what graduated in the last 24 hours, and which of it is holding real volume versus churning. demo text.",
+      "wallets": "this block covers wallet behavior: notable accumulation or distribution described by pattern, never by name. demo text.",
+      "watching": { "text": "the one item rigel is tracking into tomorrow", "expectation": "a specific, falsifiable outcome", "horizon": "48h" },
+      "read": "the lead observation of the day sits here — one tight paragraph, the sharpest thing rigel saw. this is demo text: transmission 001 replaces this entire card at the first scheduled hour."
+    }
+  ],
+  "calls": [
+    {
+      "date": "2026-08-12",
+      "call": "demo call — a specific expectation with a deadline, replaced by the first real call from brief 001",
+      "horizon": "48h",
+      "verdict": "pending",
+      "resolution": ""
+    }
+  ],
+  "board": [
+    {
+      "t": "demo board item",
+      "s": "a thesis rigel is tracking between briefs, and why it matters.",
+      "invalidation": "the specific condition that kills this thesis.",
+      "since": "aug 12",
+      "review": "aug 14"
+    }
+  ]
+}
