@@ -17,18 +17,18 @@
 <div class="vignette" aria-hidden="true"></div>
 
 <nav class="topnav">
-  <div class="nav-mark">
+  <a class="nav-mark" href="#" aria-label="rigel — back to top">
     <img class="nav-being" src="/assets/creature.png" alt="" width="24" height="24">
     <div class="nav-name">rigel</div>
-  </div>
+  </a>
   <div class="nav-right">
-    <span class="utc" id="utcClock" aria-label="current utc time">--:--:-- utc</span>
     <a href="#brief">brief</a>
     <a href="#record">record</a>
     <a href="#board">board</a>
     <a href="#archive">archive</a>
     <a href="#about">about</a>
-    <a id="xLink" href="#" target="_blank" rel="noopener">x ↗</a>
+    <a id="xLink" href="#" target="_blank" rel="noopener" aria-label="rigel on X, opens in new tab" title="rigel on X">x&#8202;↗</a>
+    <span class="utc num" id="utcClock" aria-label="current UTC time">--:--:-- UTC</span>
   </div>
 </nav>
 
@@ -44,13 +44,13 @@
     </div>
     <div class="hero-coords" aria-hidden="true">ra 05h 14m 32s &nbsp;·&nbsp; dec −08° 12′ 06″ &nbsp;·&nbsp; 860 ly</div>
     <canvas id="signal" class="hero-signal" width="560" height="30" aria-hidden="true"></canvas>
-    <p class="hero-tag">rigel analyzes on-chain activity on <b>Solana</b> and publishes one timestamped market brief every day — flows, new launches, wallet behavior, and one logged call graded against a public track record.</p>
-    <a class="hero-cta" href="#brief"><span aria-hidden="true">↓</span> read today's brief <span aria-hidden="true">↓</span></a>
+    <p class="hero-tag">rigel analyzes on-chain activity on <b>Solana</b> and publishes one timestamped brief every day. flows, new launches, wallet behavior — and one logged call, graded later against a public record.</p>
+    <a class="hero-cta" href="#brief">read today's brief<span aria-hidden="true">↓</span></a>
     <div class="hero-meta">
       <div><span class="label">next brief in</span><b id="countdown">--:--:--</b></div>
       <div><span class="label">briefs published</span><b id="txCount">0</b></div>
       <div><span class="label">calls resolved</span><b id="heroRecord">—</b></div>
-      <div><span class="label">chain</span><b>solana</b></div>
+      <div><span class="label">open calls</span><b id="openCalls">—</b></div>
     </div>
   </div>
   <div class="ticker" aria-hidden="false">
@@ -66,7 +66,7 @@
       <div class="sec-rule"></div>
       <span class="sec-note" id="briefStamp">—</span>
     </div>
-    <p class="sec-sub">one transmission per day: the lead read, three areas of the chain, and one logged call.</p>
+    <p class="sec-sub">one transmission per day: the lead read, three areas of on-chain activity, and one logged call.</p>
     <article class="brief-card" id="briefCard"></article>
   </section>
 
@@ -76,15 +76,17 @@
       <div class="sec-rule"></div>
       <span class="sec-note">misses included</span>
     </div>
-    <p class="sec-sub">every call rigel logs, graded against its stated horizon. click a row to see the original call and how it resolved. hits glow. misses stay. nothing deleted.</p>
+    <p class="sec-sub">every logged call, graded against its stated horizon. select a row to see the original wording and how it resolved. hits glow. misses stay. nothing deleted.</p>
     <div class="stat-band" id="statBand"></div>
+    <div class="band-note" id="bandNote" hidden>awaiting first resolution</div>
     <div style="overflow-x:auto">
       <table aria-label="record of calls">
         <thead><tr><th>logged</th><th>call</th><th>horizon</th><th>verdict</th></tr></thead>
         <tbody id="recordBody"></tbody>
       </table>
     </div>
-    <p class="record-note">how grading works: each call is published with an explicit expectation and horizon in that day's brief. when the horizon passes, the outcome is stated in the next brief and the verdict is set here — hit or miss, by the original wording, no edits. the archived brief and its posted copy on x are the evidence.</p>
+    <p class="record-note">how grading works: each call is published with an explicit expectation and horizon in that day's brief. when the horizon passes, the outcome is graded hit or miss against the original wording — no edits, and ambiguous outcomes grade as misses.</p>
+    <p class="record-note">the archived brief here is the canonical evidence; the copy posted to X is a redundant public timestamp.</p>
   </section>
 
   <section id="board">
@@ -103,7 +105,7 @@
       <div class="sec-rule"></div>
       <span class="sec-note">complete · unedited</span>
     </div>
-    <p class="sec-sub">every brief ever transmitted, in order, with a content hash. each brief is also posted to x at publication — the hash lets anyone confirm the archived text still matches what was published.</p>
+    <p class="sec-sub">every brief ever transmitted, in order, with a SHA-256 content hash computed live from the archived text. edit anything, and the hash stops matching the one shown at publication.</p>
     <div class="arch" id="archList"></div>
   </section>
 
@@ -116,7 +118,7 @@
     <div class="about-grid">
       <div>
         <h3>what this is</h3>
-        <p>rigel is an AI-assisted analysis desk covering the <b>Solana</b> blockchain, operated with human oversight. once a day it publishes a brief: a short, structured read on capital flows, new token launches, and notable wallet behavior, drawn from public on-chain data.</p>
+        <p>rigel is an AI-assisted analysis desk covering the <b>Solana</b> blockchain. the AI drafts the analysis; a human reviews every brief before it publishes. once a day it publishes a brief: a short, structured read on capital flows, new token launches, and notable wallet behavior, drawn from public on-chain data.</p>
       </div>
       <div>
         <h3>what a call is</h3>
@@ -124,13 +126,14 @@
       </div>
       <div>
         <h3>sources &amp; method</h3>
-        <p>reads are built from public data: dex volumes and pairs, launchpad activity, and wallet-level flows via public explorers. rigel holds no positions in anything it covers and never takes payment for coverage.</p>
+        <p>reads are built from public data: DEX volumes and pairs, launchpad activity, and wallet-level flows via public explorers. rigel holds no positions in anything it covers and never takes payment for coverage.</p>
       </div>
       <div>
         <h3>what this is not</h3>
-        <p>research and commentary, not financial advice. nothing here is a recommendation to buy or sell anything. rigel describes what is happening on the chain — what you do with that is entirely yours.</p>
+        <p>research and commentary, not financial advice. nothing here is a recommendation to buy or sell anything. rigel describes what is happening on Solana — it does not recommend trades or positions.</p>
       </div>
     </div>
+    <div class="about-note"><b>corrections:</b> factual errors are corrected by appending a note to the original brief — the original text and its hash are never edited or removed. reach the desk at <a id="xLinkAbout" href="#" target="_blank" rel="noopener" aria-label="rigel on X, opens in new tab">@rigelonchain on X</a>.</div>
   </section>
 
   <div class="creed">
@@ -141,18 +144,19 @@
 
 <footer>
   <div class="f-top">
-    <span class="f-mark">rigel</span>
+    <span class="f-mark">rigel · one brief a day · nothing deleted</span>
     <nav class="f-links" aria-label="footer">
-      <a href="#brief">today's brief</a>
+      <a href="#brief">brief</a>
       <a href="#record">record</a>
+      <a href="#board">board</a>
       <a href="#archive">archive</a>
-      <a href="#about">about &amp; methodology</a>
-      <a id="xLinkFoot" href="#" target="_blank" rel="noopener">x ↗</a>
+      <a href="#about">about</a>
+      <a id="xLinkFoot" href="#" target="_blank" rel="noopener" aria-label="rigel on X, opens in new tab" title="rigel on X">x&#8202;↗</a>
     </nav>
   </div>
   <div class="f-bottom">
     <span>observations, not advice — see <a href="#about">about</a></span>
-    <span>© 2026 rigel · one brief a day · nothing deleted</span>
+    <span>© 2026 rigel</span>
   </div>
 </footer>
 

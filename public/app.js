@@ -4,10 +4,31 @@
 ================================================================ */
 const $ = id => document.getElementById(id);
 const pad = n => String(n).padStart(2, "0");
+const pad3 = n => String(n).padStart(3, "0");
 const MONTHS = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
-const fmtDate = iso => { const [y,m,d] = iso.split("-").map(Number); return MONTHS[m-1]+" "+d; };
+const fmtDate = iso => { const [y,m,d] = iso.split("-").map(Number); return d+" "+MONTHS[m-1]+" "+y; };
 const clamp01 = v => Math.max(0, Math.min(1, v));
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* horizon "48h" + logged date → exact resolution stamp */
+function resolveStamp(iso, horizon){
+  const m = /^(\d+)\s*h$/.exec(horizon || "");
+  if(!m || !SITE) return null;
+  const [y,mo,d] = iso.split("-").map(Number);
+  const t = new Date(Date.UTC(y, mo-1, d, SITE.config.briefHourUTC, 0, 0) + Number(m[1])*3600*1000);
+  return t.getUTCDate()+" "+MONTHS[t.getUTCMonth()]+" "+t.getUTCFullYear()+", "+pad(t.getUTCHours())+":00 UTC";
+}
+
+async function copyText(btn, text){
+  try{
+    await navigator.clipboard.writeText(text);
+    const old = btn.textContent;
+    btn.classList.add("copied"); btn.textContent = "copied ✓";
+    setTimeout(() => { btn.classList.remove("copied"); btn.textContent = old; }, 1400);
+  }catch(e){
+    btn.textContent = "copy failed — select manually";
+  }
+}
 
 let SITE = null;
 
@@ -29,22 +50,55 @@ function wire(){
   const x = "https://x.com/" + SITE.config.xHandle;
   $("xLink").href = x;
   $("xLinkFoot").href = x;
+  const xa = $("xLinkAbout"); if(xa) xa.href = x;
   const tk = document.querySelector(".ticker");
-  $("tickerPause").addEventListener("click", () => {
-    tk.classList.toggle("paused");
-    $("tickerPause").textContent = tk.classList.contains("paused") ? "▶" : "⏸";
+  const btn = $("tickerPause");
+  btn.setAttribute("aria-pressed", "false");
+  btn.addEventListener("click", () => {
+    const paused = tk.classList.toggle("paused");
+    btn.textContent = paused ? "▶" : "⏸";
+    btn.setAttribute("aria-label", paused ? "resume ticker" : "pause ticker");
+    btn.setAttribute("aria-pressed", String(paused));
+  });
+  /* stop the crawl when the tab is hidden */
+  document.addEventListener("visibilitychange", () => {
+    tk.classList.toggle("tab-hidden", document.hidden);
+    document.querySelector(".ticker-track").style.animationPlayState =
+      document.hidden ? "paused" : "";
   });
 }
+
+/* active section marker in the nav */
+(function(){
+  const links = [...document.querySelectorAll(".nav-right a[href^='#']")];
+  const map = new Map(links.map(a => [a.getAttribute("href").slice(1), a]));
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if(en.isIntersecting){
+        links.forEach(a => a.classList.remove("active"));
+        const a = map.get(en.target.id);
+        if(a) a.classList.add("active");
+      }
+    });
+  }, { rootMargin:"-30% 0px -60% 0px" });
+  ["brief","record","board","archive","about"].forEach(id => {
+    const el = document.getElementById(id); if(el) io.observe(el);
+  });
+})();
 
 /* ---------- clock + countdown ---------- */
 function tick(){
   const now = new Date();
-  $("utcClock").textContent = pad(now.getUTCHours())+":"+pad(now.getUTCMinutes())+":"+pad(now.getUTCSeconds())+" utc";
+  $("utcClock").textContent = pad(now.getUTCHours())+":"+pad(now.getUTCMinutes())+":"+pad(now.getUTCSeconds())+" UTC";
   if(!SITE) return;
   const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), SITE.config.briefHourUTC, 0, 0));
   if(next <= now) next.setUTCDate(next.getUTCDate() + 1);
-  const s = Math.floor((next - now)/1000);
-  $("countdown").textContent = pad(Math.floor(s/3600))+":"+pad(Math.floor(s%3600/60))+":"+pad(s%60);
+  const s = Math.max(0, Math.floor((next - now)/1000));
+  /* within 10 min of the hour just passed → publication window, not a fresh 24h count */
+  const sincePub = 86400 - s;
+  $("countdown").textContent = (sincePub >= 0 && sincePub < 600)
+    ? "publishing…"
+    : pad(Math.floor(s/3600))+":"+pad(Math.floor(s%3600/60))+":"+pad(s%60);
 }
 tick(); setInterval(tick, 1000);
 
@@ -59,20 +113,20 @@ function buildTicker(){
 function renderBrief(){
   const b = SITE.briefs[0];
   if(!b) return;
-  $("briefStamp").textContent = "no. "+b.n+" · "+fmtDate(b.date);
-  $("txCount").textContent = SITE.briefs.length;
+  $("briefStamp").textContent = "transmission "+pad3(b.n)+" · "+fmtDate(b.date);
+  $("txCount").textContent = SITE.briefs.filter(x => !x.demo).length;
   const w = b.watching;
-  const demo = b.demo ? '<span class="demo-chip">demo data</span>' : "";
-  const tweet = b.tweet ? `<a href="${b.tweet}" target="_blank" rel="noopener">posted copy on x ↗</a>` : "";
+  const status = b.demo ? '<span class="demo-chip">example</span>' : '<span class="live">latest</span>';
+  const tweet = b.tweet ? `<a href="${b.tweet}" target="_blank" rel="noopener" aria-label="posted copy on X, opens in new tab">posted copy on X ↗</a>` : "";
+  const resolves = resolveStamp(b.date, w.horizon);
   $("briefCard").innerHTML = `
     <div class="brief-head">
-      <span class="tx">transmission ${b.n}</span>
-      <span>${fmtDate(b.date)} · ${pad(SITE.config.briefHourUTC)}:00 utc</span>
-      ${demo}
-      <span class="live">latest</span>
+      <span class="tx">transmission ${pad3(b.n)}</span>
+      <time datetime="${b.date}T${pad(SITE.config.briefHourUTC)}:00Z">${fmtDate(b.date)} · ${pad(SITE.config.briefHourUTC)}:00 UTC</time>
+      <span class="status">${status}</span>
     </div>
     <h3 class="brief-title">${b.title || "daily brief"}</h3>
-    <div class="brief-lead"><span class="lk">the read</span>${b.read}</div>
+    <div class="brief-lead"><span class="lk">the read</span><p>${b.read}</p></div>
     <div class="brief-topics">
       <div class="topic"><h4>flows</h4><p>${b.flows}</p></div>
       <div class="topic"><h4>launches</h4><p>${b.launches}</p></div>
@@ -81,22 +135,26 @@ function renderBrief(){
     <div class="watch-panel">
       <div class="wk">currently watching</div>
       <div class="wt">${w.text}</div>
-      <div class="we">expectation: <b>${w.expectation}</b> &nbsp;·&nbsp; horizon <b>${w.horizon}</b></div>
+      <div class="we">expectation: <b>“${w.expectation}”</b><span class="sep-dot">·</span>horizon ${w.horizon}${resolves ? `<span class="sep-dot">·</span>resolves ${resolves}` : ""}</div>
     </div>
     <div class="brief-actions">
       <span>observations, not advice</span>
       ${tweet}
-      <span class="hash" id="briefHash"></span>
+      <button class="hash-btn" id="briefHash" title="copy full SHA-256 hash" aria-label="copy full content hash"></button>
     </div>`;
-  briefHash(b).then(h => { const el = $("briefHash"); if(el) el.textContent = "content hash " + h; });
+  briefHash(b).then(({short, full}) => {
+    const el = $("briefHash");
+    if(el){ el.textContent = "SHA-256 " + short; el.addEventListener("click", () => copyText(el, full)); }
+  });
 }
 
 async function briefHash(b){
   try{
     const data = new TextEncoder().encode(JSON.stringify(b));
     const buf = await crypto.subtle.digest("SHA-256", data);
-    return [...new Uint8Array(buf)].slice(0,6).map(x=>x.toString(16).padStart(2,"0")).join("");
-  }catch(e){ return ""; }
+    const hex = [...new Uint8Array(buf)].map(x=>x.toString(16).padStart(2,"0")).join("");
+    return { short: hex.slice(0, 12), full: hex };
+  }catch(e){ return { short:"", full:"" }; }
 }
 
 /* ---------- record ---------- */
@@ -104,24 +162,32 @@ function renderRecord(){
   const CALLS = SITE.calls;
   const resolved = CALLS.filter(c => c.verdict !== "pending");
   const hits = CALLS.filter(c => c.verdict === "hit").length;
+  const misses = resolved.length - hits;
+  const pending = CALLS.length - resolved.length;
   const rate = resolved.length ? Math.round(hits/resolved.length*100) : null;
-  $("heroRecord").textContent = resolved.length ? rate+"% of "+resolved.length : "0 — first resolves soon";
+  $("heroRecord").textContent = resolved.length ? rate+"% of "+resolved.length : "0 · first resolution pending";
+  const oc = $("openCalls"); if(oc) oc.textContent = pending;
   $("statBand").innerHTML = `
     <div class="stat"><div class="n">${CALLS.length}</div><div class="l">calls logged</div></div>
     <div class="stat"><div class="n blue">${hits}</div><div class="l">hits</div></div>
-    <div class="stat"><div class="n">${resolved.length-hits}</div><div class="l">misses</div></div>
-    <div class="stat"><div class="n">${rate===null?'<span class="rate-wait">awaiting first resolution</span>':rate+"%"}</div><div class="l">hit rate</div></div>`;
-  $("recordBody").innerHTML = CALLS.map((c,i) => `
+    <div class="stat"><div class="n${misses>0?' red':''}">${misses}</div><div class="l">misses</div></div>
+    <div class="stat"><div class="n">${rate===null?'<span class="rate-wait">—</span>':rate+"%"}</div><div class="l">hit rate</div></div>`;
+  const bn = $("bandNote"); if(bn) bn.hidden = rate !== null;
+  $("recordBody").innerHTML = CALLS.map((c,i) => {
+    const deadline = resolveStamp(c.date, c.horizon);
+    return `
     <tr class="r-main" data-i="${i}" tabindex="0" role="button" aria-expanded="false">
       <td class="d">${fmtDate(c.date)}</td>
-      <td>${c.call}</td>
+      <td class="call-td">${c.call}</td>
       <td class="d">${c.horizon}</td>
       <td><span class="v v-${c.verdict}">${c.verdict}</span></td>
     </tr>
     <tr class="r-detail" hidden><td colspan="4">
-      <span class="dk">original call, verbatim</span>${c.call} — expectation logged ${fmtDate(c.date)}, horizon ${c.horizon}.
-      <span class="dk">resolution</span>${c.resolution || (c.verdict==="pending" ? "pending — resolves at horizon, graded in the following brief." : "graded "+c.verdict+" in the following brief.")}
-    </td></tr>`).join("");
+      <span class="dk">original call, verbatim</span>${c.call}
+      <span class="dk">logged</span>${fmtDate(c.date)}, ${pad(SITE.config.briefHourUTC)}:00 UTC · horizon ${c.horizon}${deadline ? " · deadline "+deadline : ""}
+      <span class="dk">resolution</span>${c.resolution || (c.verdict==="pending" ? "pending — resolves at the deadline, graded in the following brief." : "graded "+c.verdict+" in the following brief.")}
+    </td></tr>`;
+  }).join("");
   document.querySelectorAll("tr.r-main").forEach(row => {
     const toggle = () => {
       const det = row.nextElementSibling;
@@ -155,15 +221,22 @@ async function renderArchive(){
     const h = await briefHash(b);
     return `
     <div class="arch-row" data-n="${b.n}">
-      <span class="no">${b.n}</span>
+      <span class="no num">${pad3(b.n)}</span>
       <span class="dt">${fmtDate(b.date)}</span>
-      <span class="pv">${b.title ? b.title + " — " : ""}${b.read}</span>
-      <span class="hash">sha-256 ${h}</span>
-      ${b.tweet ? `<a class="go" href="${b.tweet}" target="_blank" rel="noopener">x ↗</a>` : `<span class="go"></span>`}
+      <span class="pv">${b.title || b.read}</span>
+      <button class="hash-btn" data-full="${h.full}" title="copy full SHA-256 hash" aria-label="copy full content hash for transmission ${pad3(b.n)}">SHA-256 ${h.short}</button>
+      ${b.tweet ? `<a class="go" href="${b.tweet}" target="_blank" rel="noopener" aria-label="transmission ${pad3(b.n)} on X, opens in new tab">x ↗</a>` : `<span class="go"></span>`}
     </div>`;
   }));
-  $("archList").innerHTML = rows.join("") +
-    `<div class="arch-note" style="padding:14px 22px;background:var(--panel)">verification: each brief is posted to x at publication. the hash above is computed live from the archived text in your browser — if the archive were ever edited, the hash would no longer match the one shown at publication time.</div>`;
+  $("archList").innerHTML =
+    `<div class="arch-labels" aria-hidden="true">
+      <span class="no">no.</span><span class="dt">published</span>
+      <span class="pv">lead observation</span><span class="hash">verification</span><span class="go"></span>
+    </div>` +
+    rows.join("") +
+    `<div class="arch-note" style="padding:14px 22px;background:var(--panel)">hashes are SHA-256, computed in your browser from the archived brief text (its JSON, utf-8). the archive is canonical; the copy posted to X is a redundant public timestamp.</div>`;
+  $("archList").querySelectorAll(".hash-btn").forEach(btn =>
+    btn.addEventListener("click", () => copyText(btn, btn.dataset.full)));
 }
 
 /* ================================================================

@@ -10,10 +10,10 @@ Named after Rigel, the blue giant star at Orion's foot (β Orionis). The X accou
 
 ## current stage (important)
 
-- The website is BUILT and polished. The X account EXISTS with pfp/banner.
-- **No real brief has ever been published.** data/site.json contains demo content marked with "demo": true flags.
-- The immediate next milestone is TRANSMISSION 01: the first real daily brief, published at the chosen hour both to X and into data/site.json (which removes the demo chips automatically when demo flag is dropped).
-- The daily hour (config.briefHourUTC, currently 21) is a placeholder — Maksim has not committed to an hour yet. Getting this chosen and getting brief 001 written is the single highest-priority task of the entire project.
+- The website is BUILT, polished, and LIVE: deployed on Render free tier (auto-deploys from GitHub repo sylenzor/rigelonchain on push to main), custom domain rigelonchain.com via GoDaddy DNS. The X account EXISTS with pfp/banner.
+- **No real brief has ever been published.** data/site.json contains an authored EXAMPLE brief (transmission 000, built from real aug 11 2026 data; "demo": true renders an "example" chip). A full external design-critique pass was implemented aug 11 2026: 4-tier text contrast (--text/--mute/--meta/--dim), tabular numerals, sticky-header anchor offsets, board auto-fit (no empty panel), hero CTA, copy-to-clipboard SHA-256 hashes, archive column labels, active-nav scrollspy, corrections policy in about.
+- The immediate next milestone is TRANSMISSION 001: the first real daily brief, published at 21:00 UTC both to X and into data/site.json as n:1 with no demo flag (the example entry n:0 can then be removed).
+- The daily hour is COMMITTED: 21:00 UTC (5pm ET), chosen aug 11 2026. Getting brief 001 written and posted is the single highest-priority task of the entire project.
 - Token plans exist but are FUTURE: $RIGEL launches only after the account has a real audience (~150-200 organic followers or one brief that clearly traveled). Do not build token features yet.
 
 ## voice rules (strict)
@@ -67,7 +67,7 @@ Posted to X at the fixed hour daily, then mirrored into data/site.json. The stre
 - The creature: pixel-art blue star with a calm eye (public/assets/creature.png) — lives in the nav (blinks every ~7s) and as favicon. NOT in the hero, NOT in the banner.
 - Hero: breathing Doto wordmark centered, real celestial coordinates, live signal waveform, countdown to next brief, 5 constellations drawn on canvas (Orion + rigel igniting, Canis Major, Taurus, Canis Minor, Lepus), draw-on-load entrance, parallax, hover star labels ("rigel · β ori · you are here"), meteors that make the ticker rail wink, nebula haze, sparkles
 - Sections: the brief (editorial card: lead read → 3 topics → watching panel → actions w/ content hash), the record (expandable rows with original call + resolution), the board (thesis + invalidates-if + review date), the archive (hashed timeline), about the desk (plain-language explainers), creed, footer
-- Known conventions: sections have scroll-margin for the sticky nav; reduced-motion is respected for entrance effects but the ticker keeps crawling (it has a pause button)
+- Known conventions: sections have scroll-margin (header height + 24px) for the sticky nav; reduced-motion now stops the ticker too (it also auto-pauses when the tab is hidden, plus manual pause button); numbering is "transmission 001" style everywhere; dates always include the year ("11 aug 2026"); proper nouns/acronyms capitalized even in lowercase voice (Solana, SOL, DEX, ETF, UTC, SHA-256, X)
 
 ## roadmap (in order)
 
