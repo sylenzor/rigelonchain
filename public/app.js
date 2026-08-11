@@ -171,7 +171,7 @@ function renderRecord(){
     <div class="stat"><div class="n">${CALLS.length}</div><div class="l">calls logged</div></div>
     <div class="stat"><div class="n blue">${hits}</div><div class="l">hits</div></div>
     <div class="stat"><div class="n${misses>0?' red':''}">${misses}</div><div class="l">misses</div></div>
-    <div class="stat"><div class="n">${rate===null?'<span class="rate-wait">—</span>':rate+"%"}</div><div class="l">hit rate</div></div>`;
+    <div class="stat"><div class="n">${rate===null?'<span class="rate-wait">pending</span>':rate+"%"}</div><div class="l">hit rate</div></div>`;
   const bn = $("bandNote"); if(bn) bn.hidden = rate !== null;
   $("recordBody").innerHTML = CALLS.map((c,i) => {
     const deadline = resolveStamp(c.date, c.horizon);

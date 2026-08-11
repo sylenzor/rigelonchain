@@ -91,14 +91,14 @@
     radial-gradient(ellipse 520px 420px at 30% 52%, rgba(77,124,255,.07), transparent 70%),
     radial-gradient(ellipse 480px 560px at 72% 42%, rgba(77,124,255,.05), transparent 70%),
     linear-gradient(to bottom, transparent 62%, var(--void) 97%)}
-  .hero-body{position:relative;z-index:2;padding:40px 28px 0;max-width:1080px;margin:0 auto;width:100%;text-align:center;display:flex;flex-direction:column;align-items:center}
+  .hero-body{position:relative;z-index:2;padding:24px 28px 0;margin-top:-16px;max-width:1080px;margin-left:auto;margin-right:auto;width:100%;text-align:center;display:flex;flex-direction:column;align-items:center}
   .hero-eyebrow{font-size:12px;letter-spacing:.2em;color:var(--mute);text-transform:lowercase;margin-bottom:22px;display:flex;align-items:center;gap:18px;justify-content:center}
   .orn-line{display:inline-block;width:64px;height:1px;background:linear-gradient(90deg,transparent,var(--dim))}
   .hero-eyebrow .orn-line:last-child{background:linear-gradient(90deg,var(--dim),transparent)}
   .hero-titlewrap{display:flex;align-items:center;gap:clamp(20px,4vw,54px);margin-bottom:clamp(26px,3.4vw,48px);will-change:transform}
   .orn{font-size:11px;line-height:2;color:var(--dim);letter-spacing:.1em;user-select:none}
   .hero-coords{position:relative;z-index:3;margin-top:0;font-size:11px;letter-spacing:.22em;color:var(--meta)}
-  .hero-signal{margin-top:16px;width:280px;height:15px;opacity:.85}
+  .hero-signal{margin-top:16px;width:280px;height:15px;opacity:.55}
   .hero-title .L{display:inline-block;animation:lin .8s cubic-bezier(.18,.9,.28,1.15) backwards}
   .hero-title .L:nth-child(1){animation-delay:1.55s}
   .hero-title .L:nth-child(2){animation-delay:1.72s}
@@ -153,7 +153,7 @@
   .ticker{
     position:absolute;left:0;right:0;bottom:0;z-index:3;
     overflow:hidden;white-space:nowrap;
-    padding:11px 0;
+    padding:14px 0;
     background:rgba(5,7,15,.78);backdrop-filter:blur(5px);
   }
   .ticker::before{
@@ -336,7 +336,7 @@
 .brief-title{font-family:var(--dot);font-weight:800;font-size:20px;color:var(--ice);letter-spacing:.04em;padding:20px 26px 0}
 .brief-lead{
   margin:16px 26px 4px;padding:18px 22px;
-  border-left:3px solid var(--blue);background:rgba(77,124,255,.04);
+  border-left:2px solid rgba(77,124,255,.75);background:rgba(77,124,255,.04);
   color:var(--ice);font-size:14px;line-height:1.8;
 }
 .brief-lead p{max-width:74ch}
@@ -366,7 +366,7 @@
 
 /* ---------- record v2 ---------- */
 .stat .n{font-size:24px}
-.stat{padding:14px 18px;min-width:130px}
+.stat{padding:11px 18px;min-width:130px}
 tbody td{color:var(--ice)}
 tbody tr.r-main{cursor:pointer}
 tbody tr.r-main td:first-child::before{content:"▸";display:inline-block;margin-right:9px;font-size:13px;color:var(--meta);transition:transform .2s}
@@ -415,9 +415,9 @@ footer{display:block;padding:20px 28px 26px;margin-top:44px;max-width:1120px}
 /* ---------- ticker pause ---------- */
 .ticker-track{flex:none}
 .ticker-pause{
-  position:absolute;right:10px;top:50%;transform:translateY(-50%);z-index:3;
+  position:absolute;right:6px;top:50%;transform:translateY(-50%);z-index:3;
   background:rgba(5,7,15,.9);border:1px solid var(--line);color:var(--mute);
-  font-size:11px;width:34px;height:34px;cursor:pointer;font-family:var(--mono);
+  font-size:12px;width:44px;height:44px;cursor:pointer;font-family:var(--mono);
   display:flex;align-items:center;justify-content:center;
 }
 .ticker-pause:hover{color:var(--glow);border-color:var(--meta)}
