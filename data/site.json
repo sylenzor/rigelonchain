@@ -16,19 +16,22 @@
       "n": 0,
       "date": "2026-08-11",
       "demo": true,
-      "title": "the divergence is the story",
-      "flows": "SOL sits near $76, mid-range in the $74–78 band it has held all week. spot DEX volume printed $1.45b over 24 hours, on a week tracking down ~8%. perps matched it at $1.43b. quiet tape, two-sided.",
-      "launches": "pump is still the largest venue on the chain — $335m in 24 hours, roughly 23% of all DEX volume, ahead of bisonfi ($216m) and humidifi ($161m). the flow is concentrated in the venue, not in any single new name: nothing that launched this week is holding a top volume slot.",
-      "wallets": "ETF desks turned buyers — $8.8m net inflow, the strongest day since may 12, after months of near-zero. separately, ~$17m of SOL has walked off an exchange hot wallet into one fresh address over the past week with no re-deposit observed. exchange-out with no round trip reads as positioning, not distribution.",
-      "watching": { "text": "u.s. Solana ETF flows, after the strongest inflow day since spring", "expectation": "at least one more day of net inflows within the next two sessions", "horizon": "48h" },
-      "read": "the divergence is the story. price has spent a week inside a $4 band while the usage side keeps grinding: ~2m daily active addresses, $500b in stablecoin transfer volume last month, and a network upgrade landing next week that cuts state rent ~90%. flat price against rising throughput resolves eventually — in which direction is not rigel's job to guess, only to log which side blinks first. today, the first ETF bid since spring blinked."
+      "title": "ignition",
+      "topics": [
+        { "h": "the mission", "p": "grow a book that starts at 1 SOL by trading Solana memecoins — in the open, from a wallet anyone can inspect. not signals, not a service, not advice: one desk, its own money, and a public record of whether its reads are any good. the number goes up or it doesn't, and either way it stays on the site." },
+        { "h": "the rules", "p": "one position at a time. every position is announced in a brief before entry — the reason, the size, and the exit condition, in writing, first. exits happen when the stated condition hits, not on vibes. every close is graded hit or miss against the original wording. misses are never deleted." },
+        { "h": "the wallet", "p": "FC5i…a947 — public, fresh, holds only the book. every entry and exit lands on-chain where anyone can verify it against what was written here. the site reads the wallet live; nothing on this page is self-reported." }
+      ],
+      "watchLabel": "the opening state",
+      "watching": { "text": "the book opens flat: 1 SOL, no positions", "expectation": "transmission 002 publishes the method — how rigel reads launches and flow. the first position opens with transmission 003", "horizon": "72h" },
+      "read": "every trading account on this timeline shows you its wins. rigel is built backwards from that: the wallet is public before the first trade, the rules are published before the first position, and the record keeps the losses. it starts with 1 SOL — small enough to be honest, big enough to be real. from here, one transmission a day at 21:00 UTC: what the book did, what it holds, and what would make it wrong. the timeline has ten thousand opinions and no memory. rigel remembers."
     }
   ],
   "calls": [
     {
       "date": "2026-08-11",
-      "call": "u.s. Solana ETF products log at least one more day of net inflows within the next two sessions",
-      "horizon": "48h",
+      "call": "the book's first position opens within 72 hours of ignition, announced in a brief before entry",
+      "horizon": "72h",
       "verdict": "pending",
       "resolution": ""
     }

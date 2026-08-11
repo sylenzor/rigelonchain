@@ -129,12 +129,14 @@ function renderBrief(){
     <h3 class="brief-title">${b.title || "daily brief"}</h3>
     <div class="brief-lead"><span class="lk">the read</span><p>${b.read}</p></div>
     <div class="brief-topics">
-      <div class="topic"><h4>flows</h4><p>${b.flows}</p></div>
-      <div class="topic"><h4>launches</h4><p>${b.launches}</p></div>
-      <div class="topic"><h4>wallets</h4><p>${b.wallets}</p></div>
+      ${(b.topics || [
+        { h: "flows", p: b.flows },
+        { h: "launches", p: b.launches },
+        { h: "wallets", p: b.wallets },
+      ]).map(t => `<div class="topic"><h4>${t.h}</h4><p>${t.p}</p></div>`).join("")}
     </div>
     <div class="watch-panel">
-      <div class="wk">currently watching</div>
+      <div class="wk">${b.watchLabel || "currently watching"}</div>
       <div class="wt">${w.text}</div>
       <div class="we">expectation: <b>“${w.expectation}”</b><span class="sep-dot">·</span>horizon ${w.horizon}${resolves ? `<span class="sep-dot">·</span>resolves ${resolves}` : ""}</div>
     </div>

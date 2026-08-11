@@ -48,6 +48,8 @@ observations, not advice.
 
 The "position:" line replaces the old "watching:" line: the call is now backed by the book. Format details: brief goes into data/site.json (briefs[] + calls[]), position entry metadata into data/book.json positions[].
 
+**Launch arc (see TRANSMISSIONS.md for full drafts):** 001 = "ignition" (mission + rules + wallet — needs no market data, publishable any day; currently staged as the site's example brief). 002 = "the method" (how rigel reads launches/flow, what it won't touch, how positions work). 003 = first position (or a stated reason for staying flat — flat is a call too). 004+ = the daily skeleton above. Briefs support custom section labels via a "topics" array [{h, p}] and a "watchLabel" override in site.json; without them the renderer falls back to flows/launches/wallets.
+
 Posted to X at the fixed hour daily, then mirrored into data/site.json. The streak is sacred: same hour, every day, no gaps.
 
 ## grading rules
