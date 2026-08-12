@@ -1,98 +1,39 @@
-# rigel — project context
+# rigel protocol — project context
 
-This file orients Claude (Cowork / Claude Code) on the rigel project. Read fully before making changes.
+This file orients Claude (Cowork / Claude Code) on the project. Read fully before making changes.
 
-## what rigel is
+## what this is (current, as of aug 11 2026 evening)
 
-rigel is an AI trading desk covering the **Solana** blockchain (memecoin-forward), operated by Maksim with human oversight. Once a day it publishes a "brief": a short, structured read on capital flows, new token launches, and notable wallet behavior, drawn from public on-chain data. Every brief logs one "call" — a specific, falsifiable expectation with a time horizon — graded hit/miss in public. **As of aug 11 2026, rigel also trades a small real book of its own** (starting 1 SOL) from a public wallet: one position at a time, taken only on a published call, exit condition written before entry, everything verifiable on-chain. The tagline and product promise: **one brief a day. nothing deleted.**
+**Rigel Protocol** — an open-source MCP (Model Context Protocol) server, `@rigel-protocol/solana-mcp`, that bridges local AI clients (Claude Desktop, Cursor, any stdio MCP client) to the Solana blockchain and the pump.fun ecosystem. TypeScript, ESM, built on `@modelcontextprotocol/sdk` + `@solana/web3.js`.
 
-Positioning vs omo (the FOMO-app AI trader that inspired this): omo is impulse — it chases the tape all day and you watch. rigel is thesis — it publishes first and trades second, once a day at a fixed hour, and you can audit the reasoning and keep score. "omo chases, rigel waits."
+Three MCP tools (Zod-validated inputs):
+1. `rigel_get_wallet_balance(walletAddress)` — SOL balance + major SPL holdings via RPC
+2. `rigel_inspect_token_data(tokenAddress)` — pump.fun token metadata, bonding-curve SOL, supply, curve completion %
+3. `rigel_analyze_rug_risk(tokenAddress)` — mint/freeze authority status, top-holder concentration → formatted risk report
 
-**The book (trading rules, strict):**
-- Public wallet: FC5iXHES57un9nCdF9SrQfijxmk5bxJ3uZnVXS2Na947 (fresh, holds only the book; shown on the site with Solscan link)
-- The PRIVATE KEY never appears in the repo, in chat, in Claude sessions, or on the server. Maksim signs everything. Claude never asks for it.
-- One position at a time (max), sized from the 1 SOL book. A position may only be opened on a call published in that day's brief, and its "exits if" invalidation must be written in the brief BEFORE entry.
-- Exits happen when the stated invalidation or horizon hits — not on vibes. Every close is graded in the record and moved to realized[] in data/book.json.
-- data/book.json = entry metadata (why each position exists); holdings/prices are read live on-chain via /api/book (server.js). Never fake or hand-edit balances.
+Key posture: **read-only** — no private keys, no signing, no custody, runs locally over stdio, RPC configurable via `SOLANA_RPC_URL` env. MIT license. Console logs go to stderr (stdout is reserved for MCP protocol traffic).
 
-Named after Rigel, the blue giant star at Orion's foot (β Orionis). The X account is **@rigelonchain**.
+## project history (one paragraph — for context only)
 
-## current stage (important)
+This repo was previously "rigel" — first a daily Solana analysis desk, then briefly an AI trading desk with a public 1 SOL wallet (FC5iXHES57un9nCdF9SrQfijxmk5bxJ3uZnVXS2Na947 — still Maksim's; unused by the protocol). On aug 11 2026 Maksim scrapped that direction entirely ("scratch everything, the vibe motto everything") and pivoted to the MCP server. All prior work (desk site, book section, brief system) lives in git history. Old files data/site.json, data/book.json, public/style.css, public/app.js are LEGACY — unused by the new landing page, kept only for history; don't extend them.
 
-- The website is BUILT, polished, and LIVE: deployed on Render free tier (auto-deploys from GitHub repo sylenzor/rigelonchain on push to main), custom domain rigelonchain.com via GoDaddy DNS. The X account EXISTS with pfp/banner.
-- **No real brief has ever been published.** data/site.json contains an authored EXAMPLE brief (transmission 000, built from real aug 11 2026 data; "demo": true renders an "example" chip). A full external design-critique pass was implemented aug 11 2026: 4-tier text contrast (--text/--mute/--meta/--dim), tabular numerals, sticky-header anchor offsets, board auto-fit (no empty panel), hero CTA, copy-to-clipboard SHA-256 hashes, archive column labels, active-nav scrollspy, corrections policy in about.
-- The immediate next milestone is TRANSMISSION 001: the first real daily brief, published at 21:00 UTC both to X and into data/site.json as n:1 with no demo flag (the example entry n:0 can then be removed).
-- The daily hour is COMMITTED: 21:00 UTC (5pm ET), chosen aug 11 2026. Getting brief 001 written and posted is the single highest-priority task of the entire project.
-- Token plans exist but are FUTURE: $RIGEL launches only after the account has a real audience (~150-200 organic followers or one brief that clearly traveled). Do not build token features yet.
+## current state
 
-## voice rules (strict)
+- **Landing page: BUILT** — public/index.html, fully self-contained (inline CSS/JS), dev-tool aesthetic: dark #07080D, Inter + JetBrains Mono, blue #4D7CFF accent, ✦ star mark (the one brand carryover). Sections: hero + terminal demo, 3 tool cards, install steps + claude_desktop_config.json copy block, security/trust grid, footer.
+- **MCP server code: NOT YET BUILT.** Full spec exists (Maksim's prompt, aug 11): package.json, tsconfig (ESM), src with the 3 tools, StdioServerTransport, error handling for bad pubkeys / RPC drops, stderr logging, README, config snippet. This is the next task.
+- Deploy: Render web service (auto-deploys sylenzor/rigelonchain main branch), domain rigelonchain.com via GoDaddy. server.js (Express) serves public/ — its /api/site and /api/book endpoints are legacy, harmless.
+- npm package `@rigel-protocol/solana-mcp` is NOT published yet — landing references it aspirationally; publish before promoting the site.
 
-- lowercase everything, including the name: rigel, never Rigel (except in plain-prose explainer text where natural sentence case is fine)
-- precise, calm, numbers-first, zero hype, zero emojis, no exclamation marks
-- never says "buy", never gives advice; every brief ends with: *observations, not advice.*
-- misses are owned in one line the next day ("yesterday's read on X was early. noted.")
-- register: the quietest account on a screaming timeline; quiet competence
+## conventions
 
-## the daily brief format (fixed skeleton)
+- Landing page stays a single self-contained index.html (no build step for the site).
+- The MCP server lives in its own directory (suggest /mcp or separate repo) with its own package.json — do not tangle it with the Express site server.
+- Never put private keys anywhere in the repo. The protocol is read-only by design — keep it that way; adding signing/trading tools would change the security posture the landing promises.
+- GitHub: github.com/sylenzor/rigelonchain (repo may be renamed to rigel-protocol later; update links in index.html footer/nav when that happens).
+- Domain rigelonchain.com may also be replaced to match the new brand — pending Maksim.
 
-```
-rigel — [day] [mon] [year]
-flows: [1-2 lines: SOL/majors movement, DEX volume vs yesterday, anything unusual]
-launches: [1-2 lines: what graduated, what's holding volume vs churn — memecoin-forward]
-wallets: [1-2 lines: notable accumulation/distribution, by behavior, never by name]
-position: [asset · size in SOL · entry] · exits if: [pre-committed invalidation] · horizon: [e.g. 48h]
-  (or "position: none — [one line why]" on days rigel stays flat; staying flat is a call too)
-read of the day: [ONE paragraph, the sharpest observation — written last]
-observations, not advice.
-```
+## guardrails that survived the pivot
 
-The "position:" line replaces the old "watching:" line: the call is now backed by the book. Format details: brief goes into data/site.json (briefs[] + calls[]), position entry metadata into data/book.json positions[].
-
-**Launch arc (see TRANSMISSIONS.md for full drafts):** 001 = "ignition" (mission + rules + wallet — needs no market data, publishable any day; currently staged as the site's example brief). 002 = "the method" (how rigel reads launches/flow, what it won't touch, how positions work). 003 = first position (or a stated reason for staying flat — flat is a call too). 004+ = the daily skeleton above. Briefs support custom section labels via a "topics" array [{h, p}] and a "watchLabel" override in site.json; without them the renderer falls back to flows/launches/wallets.
-
-Posted to X at the fixed hour daily, then mirrored into data/site.json. The streak is sacred: same hour, every day, no gaps.
-
-## grading rules
-
-- Each call = expectation + horizon, logged the day it's made.
-- At horizon: graded hit or miss against the ORIGINAL WORDING, stated in the next brief, verdict flipped in site.json ("pending" → "hit"/"miss") with a resolution sentence.
-- NEVER delete or edit past briefs or calls. Never remove misses. The archive's integrity (content hashes shown on site) depends on this.
-
-## hard boundaries (do not cross)
-
-- No financial advice, no recommendations to readers, no "you should buy/sell" language anywhere. rigel trades ONLY its own book, at its own risk, by its own published rules, and says so plainly.
-- Every position rigel takes must be disclosed in the brief that opened it and visible on-chain — no hidden trades, no trading anything it hasn't covered in writing. rigel never takes payment for coverage.
-- The site/record/briefs stay FREE — no token gating ever (legal posture: Ontario, Canada; gating + token = securities risk).
-- Trading gains/losses are taxable in Canada (business income or capital gains) — keep records of every trade; remind Maksim periodically. He should confirm the posture with an accountant.
-- When the token era comes: fair launch, no presale, no profit promises. Creator fees are taxable business income in Canada — remind Maksim to keep records.
-- Never name/accuse individuals in wallet commentary — describe behavior patterns only.
-- Wallet private key: never in repo/chat/server. Non-negotiable.
-
-## tech stack
-
-- Node + Express server (server.js) serving public/ and GET /api/site → data/site.json
-- Run: `npm install` once, then `npm start` → http://localhost:3000
-- Front-end: vanilla JS (public/app.js), one stylesheet (public/style.css), no build step
-- ALL content edits happen in data/site.json only. Site re-renders on browser refresh (Ctrl+Shift+R after css/js changes).
-- Fonts: Doto (dot-matrix display, the wordmark) + IBM Plex Mono (everything else), via Google Fonts
-- Deploy target when ready: Render/Railway/Fly free tier from a GitHub repo
-
-## brand / design system
-
-- Palette: void #05070F, panel #0A0F1E, line #141C33, dim #3A4566, mute #6B7899, text #C9D4EC, ice #DCE7FF, blue #4D7CFF, glow #8FB5FF, miss #B85C72
-- The creature: pixel-art blue star with a calm eye (public/assets/creature.png) — lives in the nav (blinks every ~7s) and as favicon. NOT in the hero, NOT in the banner.
-- Hero: breathing Doto wordmark centered, real celestial coordinates, live signal waveform, countdown to next brief, 5 constellations drawn on canvas (Orion + rigel igniting, Canis Major, Taurus, Canis Minor, Lepus), draw-on-load entrance, parallax, hover star labels ("rigel · β ori · you are here"), meteors that make the ticker rail wink, nebula haze, sparkles
-- Sections: the brief (editorial card: lead read → 3 topics → watching panel → actions w/ content hash), the record (expandable rows with original call + resolution), the board (thesis + invalidates-if + review date), the archive (hashed timeline), about the desk (plain-language explainers), creed, footer
-- Known conventions: sections have scroll-margin (header height + 24px) for the sticky nav; reduced-motion now stops the ticker too (it also auto-pauses when the tab is hidden, plus manual pause button); numbering is "transmission 001" style everywhere; dates always include the year ("11 aug 2026"); proper nouns/acronyms capitalized even in lowercase voice (Solana, SOL, DEX, ETF, UTC, SHA-256, X)
-
-## roadmap (in order)
-
-1. **Fund wallet with 1 SOL (address above). Write and publish transmission 001 with the first position.** ← everything blocks on this. Site, domain, deploy, book section: DONE.
-2. 14 days of daily briefs + positions + reply-guy distribution (reply with precise data under big accounts; never self-promo)
-3. Automate execution (Jupiter swaps via a bot Maksim runs locally with his key) + streamed decision log — the omo-style terminal, phase 2, only after the manual loop has run ~2 weeks clean
-4. Launch gate check → $RIGEL fair launch on pump.fun ONLY if real audience exists
-5. Later features: per-brief permalink pages, equity-curve sparkline, OG image generator, automation of data gathering (the "rigel no longer needs me to type" lore moment)
-
-## history in one paragraph (for context)
-
-This project emerged after several failed cold token launches (The Intern, $MARTIN) taught the core lesson: distribution/audience is the bottleneck, not concepts. rigel is the deliberate answer — build the product and audience FIRST, token later. It began as pure analysis ("omo-style transparent AI desk, but analysis instead of trading"); on aug 11 2026 Maksim decided rigel should also trade a small real book, omo-inspired but thesis-first (publish, then trade, then grade) rather than impulse-driven. The recurring failure mode to guard against: endless polishing/pivoting instead of shipping the daily brief. The design is DONE, the site is LIVE, the book infrastructure is BUILT — if Maksim proposes more features or new directions before transmission 001 exists, gently point at this line. Transmission 001 is the only remaining launch blocker, and has been since day one.
+- No financial advice; the rug-risk tool reports on-chain facts, not "buy/sell" recommendations. Keep "not financial advice" in the footer.
+- Open source honesty: don't claim features on the landing that the server doesn't have yet.
+- Ontario, Canada legal posture; any future token remains gated behind real adoption (same lesson as before: distribution first).
