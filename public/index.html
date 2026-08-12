@@ -150,8 +150,8 @@ h1 .owl-h{display:inline-block;vertical-align:middle;margin:0 10px;width:.95em;h
 .typing i:nth-child(3){animation-delay:.36s}
 @keyframes tybl{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
 @media (prefers-reduced-motion: reduce){
-  .chat-body.anim .msg{opacity:1;transform:none;transition:none}
-  .typing{display:none !important}
+  /* demo still plays (it is the content), but without movement — fade only */
+  .chat-body.anim .msg{transform:none}
 }
 .m-user{align-self:flex-end;background:rgba(77,124,255,.14);border:1px solid rgba(77,124,255,.3);border-bottom-right-radius:4px}
 .m-bot{align-self:flex-start;background:var(--panel);border:1px solid var(--line);border-bottom-left-radius:4px;color:var(--txt-2)}
@@ -563,7 +563,6 @@ document.getElementById("copyConfigTop").addEventListener("click", function(){ d
 /* ---- the demo: a three-act product tour that plays itself, then loops ----
    act 1: install in a terminal · act 2: config lands in Claude · act 3: ask anything */
 (function(){
-  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const scenes = {
     term: document.getElementById("sceneTerm"),
     conf: document.getElementById("sceneConf"),
@@ -583,11 +582,6 @@ document.getElementById("copyConfigTop").addEventListener("click", function(){ d
     title.textContent = titleText;
   }
 
-  if (reduced) { // static: show the finished conversation
-    setScene("chat", 2, "Claude Desktop");
-    scenes.chat.classList.remove("anim");
-    return;
-  }
   scenes.chat.classList.add("anim");
 
   const wait = (ms) => new Promise(r => setTimeout(r, ms));
