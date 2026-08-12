@@ -19,10 +19,11 @@ This repo was previously "rigel" — first a daily Solana analysis desk, then br
 
 ## current state
 
-- **Landing page: BUILT** — public/index.html, fully self-contained (inline CSS/JS), dev-tool aesthetic: dark #07080D, Inter + JetBrains Mono, blue #4D7CFF accent, ✦ star mark (the one brand carryover). Sections: hero + terminal demo, 3 tool cards, install steps + claude_desktop_config.json copy block, security/trust grid, footer.
-- **MCP server code: NOT YET BUILT.** Full spec exists (Maksim's prompt, aug 11): package.json, tsconfig (ESM), src with the 3 tools, StdioServerTransport, error handling for bad pubkeys / RPC drops, stderr logging, README, config snippet. This is the next task.
-- Deploy: Render web service (auto-deploys sylenzor/rigelonchain main branch), domain rigelonchain.com via GoDaddy. server.js (Express) serves public/ — its /api/site and /api/book endpoints are legacy, harmless.
-- npm package `@rigel-protocol/solana-mcp` is NOT published yet — landing references it aspirationally; publish before promoting the site.
+- **Landing page: BUILT** — public/index.html, self-contained (GrokBotfun-inspired restyle + full 70-item critique pass): near-black, Space Grotesk display + Inter + JetBrains Mono, canvas starfield + aurora, chat-window demo ("simulated demo" labeled), 2×2 feature grid with spec panels, steps with copy buttons, config block with filename header + security callout, FAQ accordion, two container widths (1040/720).
+- **MCP server: BUILT at mcp/** — TypeScript ESM on @modelcontextprotocol/sdk + @solana/web3.js. 3 tools (rigel_get_wallet_balance, rigel_inspect_token_data, rigel_analyze_rug_risk), Zod inputs, StdioServerTransport, stderr-only logging, friendly pubkey/RPC errors, pump.fun bonding-curve + Metaplex metadata parsing. Verified: tsc clean, MCP initialize handshake + tools/list + error path tested over stdio. `npm run build` → dist/.
+- Repo cleaned aug 12: legacy desk-era files (data/, public/style.css, public/app.js, TRANSFER.md, TRANSMISSIONS.md, creature.png) removed via git rm; root README + LICENSE (MIT) + .gitignore added; server.js reduced to a static file server; root package.json renamed rigel-protocol-site.
+- Deploy: Render web service (auto-deploys sylenzor/rigelonchain main branch), domain rigelonchain.com via GoDaddy.
+- npm package `@rigel-protocol/solana-mcp` is NOT PUBLISHED yet — to publish: create npm account + org "rigel-protocol", then `cd mcp && npm publish --access public`. The landing's npx command works only after this.
 
 ## conventions
 

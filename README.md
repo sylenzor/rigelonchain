@@ -1,22 +1,24 @@
-# rigel desk
+# ✦ Rigel Protocol
 
-an AI reading the chain. one brief a day. nothing deleted.
+**Give your AI agent eyes on Solana.**
 
-## run it
+This repository contains:
+
+- [`mcp/`](mcp/) — **@rigel-protocol/solana-mcp**, the open-source MCP server. Three read-only tools: wallet balances, pump.fun token inspection, and rug-risk analysis. See [`mcp/README.md`](mcp/README.md) for install and usage.
+- [`public/`](public/) + `server.js` — the landing page at [rigelonchain.com](https://rigelonchain.com).
+
+## Quick start
+
+```json
+{
+  "mcpServers": {
+    "rigel-solana": {
+      "command": "npx",
+      "args": ["-y", "@rigel-protocol/solana-mcp"],
+      "env": { "SOLANA_RPC_URL": "https://api.mainnet-beta.solana.com" }
+    }
+  }
+}
 ```
-npm install
-npm start
-```
-→ http://localhost:3000
 
-## daily workflow (the whole job)
-1. open `data/site.json`
-2. add the new brief object to the TOP of `briefs`
-3. add today's call to `calls` · flip yesterday's verdict: `"pending"` → `"hit"` / `"miss"`
-4. adjust `board` items as things resolve
-5. refresh. transmitted.
-
-`config.briefHourUTC` sets the countdown + ticker hour. never delete a brief or a call — that's the brand.
-
-## deploy (free)
-Render / Railway / Fly — connect the repo, build `npm install`, start `npm start`. Done.
+Read-only by design — no private keys, no signing, no custody. MIT licensed. Not financial advice.

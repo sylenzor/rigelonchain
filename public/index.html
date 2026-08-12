@@ -49,8 +49,9 @@ section{scroll-margin-top:calc(var(--nav-h) + 16px)}
 #sky{position:fixed;inset:0;z-index:-2;width:100%;height:100%;pointer-events:none}
 .aurora{position:fixed;inset:0;z-index:-1;pointer-events:none;
   background:
-    radial-gradient(52% 42% at 50% -6%, rgba(77,124,255,.16), transparent 68%),
-    radial-gradient(38% 30% at 82% 18%, rgba(124,77,255,.08), transparent 70%)}
+    radial-gradient(52% 42% at 50% -6%, rgba(77,124,255,.17), transparent 68%),
+    radial-gradient(38% 30% at 82% 18%, rgba(124,77,255,.1), transparent 70%),
+    radial-gradient(42% 34% at 12% 32%, rgba(61,220,151,.05), transparent 70%)}
 
 /* ---- copy buttons ---- */
 .cbtn{display:inline-flex;align-items:center;justify-content:center;gap:7px;
@@ -175,9 +176,10 @@ h2{font-size:clamp(28px,3.8vw,38px);font-weight:700;letter-spacing:-.03em;line-h
 .step h3{font-size:16px;font-weight:600}
 .step p{font-size:14px;color:var(--txt-2)}
 .step .code{margin-top:auto;padding-top:14px}
-.step .code > span{display:block;background:#101014;border:1px solid var(--line-2);border-radius:10px;
-  padding:11px 14px;font-family:var(--mono);font-size:12.5px;color:var(--txt-2);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.step .code > span{display:flex;align-items:center;gap:10px;background:#101014;border:1px solid var(--line-2);border-radius:10px;
+  padding:8px 8px 8px 14px;font-family:var(--mono);font-size:12.5px;color:var(--txt-2)}
+.step .code .cmd-t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.step .code .cbtn{min-width:0;padding:6px 10px}
 .step .code .g{color:var(--green)}
 
 /* ---- config ---- */
@@ -370,7 +372,7 @@ curve            <span class="g">87% complete</span>
       <div class="step">
         <div class="hrow"><span class="n">1</span><h3>Add Rigel to your agent</h3></div>
         <p>One block in your MCP config, or run it straight from npm.</p>
-        <div class="code"><span>npx -y @rigel-protocol/solana-mcp</span></div>
+        <div class="code"><span><span class="cmd-t">npx -y @rigel-protocol/solana-mcp</span><button class="cbtn" data-copy="npx -y @rigel-protocol/solana-mcp" aria-label="Copy npm command"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" width="13" height="13"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>Copy</button></span></div>
       </div>
       <div class="step">
         <div class="hrow"><span class="n">2</span><h3>Ask about anything on-chain</h3></div>
@@ -462,12 +464,12 @@ curve            <span class="g">87% complete</span>
     c.width = W * d; c.height = H * d;
     x.setTransform(d, 0, 0, d, 0, 0);
     stars = [];
-    const n = Math.floor(W * H / 5600);
+    const n = Math.floor(W * H / 4200);
     for(let i = 0; i < n; i++){
       stars.push({
         px: Math.random() * W, py: Math.random() * H,
-        r: Math.random() < .88 ? (Math.random() * .8 + .4) : (Math.random() * 1.4 + 1),
-        a: .1 + Math.random() * .4,
+        r: Math.random() < .88 ? (Math.random() * .9 + .4) : (Math.random() * 1.5 + 1.1),
+        a: .12 + Math.random() * .5,
         tw: Math.random() * Math.PI * 2,
         sp: .25 + Math.random() * 1.1,
         blue: Math.random() < .28

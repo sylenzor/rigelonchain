@@ -1,8 +1,0 @@
-{
-  "_usage": "entry metadata for the book. holdings are read live from the chain; this file records WHY each position exists. when a position opens, add it to positions[] (mint, symbol, entryDate, entryPriceUSD, sizeSOL, invalidation, brief n). when it closes, move it to realized[] with exitDate, exitPriceUSD, and pnlPct.",
-  "wallet": "FC5iXHES57un9nCdF9SrQfijxmk5bxJ3uZnVXS2Na947",
-  "started": "2026-08-11",
-  "startedSOL": 1,
-  "positions": [],
-  "realized": []
-}
