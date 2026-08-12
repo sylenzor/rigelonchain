@@ -48,11 +48,13 @@ section{scroll-margin-top:calc(var(--nav-h) + 16px)}
 
 /* ---- sky ---- */
 #sky{position:fixed;inset:0;z-index:-2;width:100%;height:100%;pointer-events:none}
-.aurora{position:fixed;inset:0;z-index:-1;pointer-events:none;
+.aurora{position:fixed;inset:-6%;z-index:-1;pointer-events:none;
   background:
     radial-gradient(52% 42% at 50% -6%, rgba(77,124,255,.17), transparent 68%),
     radial-gradient(38% 30% at 82% 18%, rgba(124,77,255,.1), transparent 70%),
-    radial-gradient(42% 34% at 12% 32%, rgba(61,220,151,.05), transparent 70%)}
+    radial-gradient(42% 34% at 12% 32%, rgba(61,220,151,.05), transparent 70%);
+  animation:auroraDrift 48s ease-in-out infinite alternate}
+@keyframes auroraDrift{from{transform:translate(0,0)}to{transform:translate(26px,16px)}}
 
 /* ---- copy buttons ---- */
 .cbtn{display:inline-flex;align-items:center;justify-content:center;gap:7px;
@@ -68,12 +70,15 @@ nav{position:sticky;top:0;z-index:50;background:rgba(10,10,11,.92);backdrop-filt
   border-bottom:1px solid var(--line)}
 .nav-in{max-width:var(--w-wide);margin:0 auto;padding:0 24px;height:var(--nav-h);
   display:flex;align-items:center;justify-content:space-between}
-.nav-l{display:flex;align-items:center;gap:6px}
-.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:17px;color:var(--txt);padding:8px 10px;margin-left:-10px;margin-right:14px;border-radius:8px}
+.nav-l{display:flex;align-items:center;gap:8px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:21px;color:var(--txt);padding:8px 10px;margin-left:-10px;margin-right:16px;border-radius:8px}
 .logo:hover{color:var(--blue-2)}
-.logo .owl{display:block;filter:drop-shadow(0 0 8px rgba(3,225,255,.35))}
-.nav-l a.txt{color:var(--txt-2);padding:12px 12px;border-radius:8px;display:inline-flex;align-items:center;min-height:44px;font-size:14px}
-.nav-l a.txt:hover{color:var(--txt);background:var(--panel)}
+.logo .owl{display:block;width:32px;height:32px;filter:drop-shadow(0 0 8px rgba(3,225,255,.35))}
+.nav-l a.txt{color:var(--txt-2);padding:14px 14px;border-radius:8px;display:inline-flex;align-items:center;min-height:48px;font-size:15.5px;position:relative}
+.nav-l a.txt::after{content:"";position:absolute;left:14px;right:14px;bottom:9px;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,#03E1FF,#DC1FFF);transform:scaleX(0);transform-origin:left;transition:transform .22s ease}
+.nav-l a.txt:hover{color:var(--txt)}
+.nav-l a.txt:hover::after{transform:scaleX(1)}
 .nav-r{display:flex;align-items:center;gap:2px;font-size:14px}
 .nav-r a{color:var(--txt-2);padding:12px 12px;border-radius:8px;display:inline-flex;align-items:center;min-height:44px}
 .nav-r a:hover{color:var(--txt);background:var(--panel)}
@@ -87,9 +92,12 @@ nav{position:sticky;top:0;z-index:50;background:rgba(10,10,11,.92);backdrop-filt
 .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;color:var(--blue-2);
   text-transform:uppercase;display:block;margin-bottom:18px}
 h1{font-size:clamp(46px,7vw,80px);font-weight:700;letter-spacing:-.04em;line-height:1.02;margin-bottom:20px}
-h1 .grad{background:linear-gradient(115deg,#00FFA3 0%,#03E1FF 45%,#DC1FFF 100%);
+h1 .grad{background:linear-gradient(115deg,#00FFA3 0%,#03E1FF 35%,#DC1FFF 70%,#00FFA3 100%);
+  background-size:250% 100%;
   -webkit-background-clip:text;background-clip:text;color:transparent;
-  filter:drop-shadow(0 0 34px rgba(3,225,255,.3))}
+  filter:drop-shadow(0 0 34px rgba(3,225,255,.3));
+  animation:gradShift 8s ease-in-out infinite alternate}
+@keyframes gradShift{from{background-position:0% 0}to{background-position:100% 0}}
 h1 .owl-h{display:inline-block;vertical-align:middle;margin:0 10px;width:.95em;height:.95em;
   filter:drop-shadow(0 0 24px rgba(3,225,255,.4))}
 #owlPupils{transition:transform .18s ease-out}
@@ -127,7 +135,8 @@ h1 .owl-h{display:inline-block;vertical-align:middle;margin:0 10px;width:.95em;h
 .dstep{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--txt-3);
   border:1px solid var(--line);border-radius:999px;padding:5px 14px;transition:.3s}
 .dstep.on{color:#00FFA3;border-color:rgba(0,255,163,.4);background:rgba(0,255,163,.06)}
-.scene{height:620px;overflow-y:auto}
+.scene{height:620px;overflow-y:auto;scrollbar-width:none}
+.scene::-webkit-scrollbar{display:none}
 .scene:not(.on){display:none !important}
 .scene#sceneTerm.on,.scene#sceneConf.on{display:block}
 @media (max-width:760px){.scene{height:680px}}
@@ -188,15 +197,20 @@ h2{font-size:clamp(28px,3.8vw,38px);font-weight:700;letter-spacing:-.03em;line-h
 
 /* ---- feature grid ---- */
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));gap:18px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px 26px;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px 26px;min-width:0;
+  display:flex;flex-direction:column}
 .card h3{font-size:17px;font-weight:600;margin-bottom:7px}
 .card > p{font-size:14.5px;color:var(--txt-2);max-width:56ch}
-.card .visual{margin-top:18px;border-radius:var(--r-md);padding:16px;min-height:158px;display:flex;flex-direction:column;justify-content:center}
+.card .visual{margin-top:auto;border-radius:var(--r-md);padding:16px;height:212px;display:flex;flex-direction:column;justify-content:center}
+.card > p + .visual{margin-top:18px}
+.card .visual{margin-top:18px}
+.card{justify-content:space-between}
 .v-blue{background:radial-gradient(140% 150% at 50% 0%,rgba(77,124,255,.15),transparent 62%),var(--panel-2)}
 .v-violet{background:radial-gradient(130% 150% at 85% 0%,rgba(124,77,255,.18),transparent 60%),var(--panel-2)}
 .mini{background:#101014;border:1px solid var(--line-2);border-radius:10px;overflow:hidden}
 .mini-head{display:flex;align-items:center;justify-content:space-between;padding:10px 15px;border-bottom:1px solid var(--line);font-size:13px;font-weight:600}
-.mini-head .st{font-family:var(--mono);font-size:11px;color:var(--green);border:1px solid rgba(61,220,151,.4);border-radius:999px;padding:2px 10px}
+.mini-head .st{font-family:var(--mono);font-size:11px;color:var(--green);border:1px solid rgba(61,220,151,.4);border-radius:999px;padding:2px 10px;animation:stPulse 2.6s ease-in-out infinite}
+@keyframes stPulse{0%,100%{opacity:1}50%{opacity:.55}}
 .mini-row{display:flex;align-items:baseline;gap:10px;padding:9px 15px;border-bottom:1px solid var(--line);font-size:12.5px;min-width:0;flex-wrap:wrap}
 .mini-row:last-child{border-bottom:none}
 .mini-row .fn{font-family:var(--mono);color:var(--blue-2);font-size:12px}
@@ -212,9 +226,11 @@ h2{font-size:clamp(28px,3.8vw,38px);font-weight:700;letter-spacing:-.03em;line-h
 /* ---- steps ---- */
 .client-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:-8px 0 28px}
 .client-row .chip{background:var(--panel);padding:6px 16px;font-size:13px}
-.logo-chip{display:inline-flex;align-items:center;justify-content:center;padding:9px 18px !important}
-.logo-chip svg{width:22px;height:22px;display:block}
-.logo-chip:hover{border-color:var(--line-2);transform:translateY(-1px)}
+.logo-chip{display:inline-flex;align-items:center;justify-content:center;
+  background:none !important;border:none !important;padding:8px !important;transition:transform .18s}
+.logo-chip svg{width:34px;height:34px;display:block}
+.logo-chip:hover{transform:translateY(-2px) scale(1.12)}
+.client-row{gap:22px}
 .chip{transition:transform .15s,border-color .15s}
 
 /* ---- scroll reveal + card life ---- */
@@ -383,6 +399,13 @@ footer{border-top:1px solid var(--line);margin-top:72px}
       <div class="msg m-bot">
         <span class="toolrow">⚙ rigel_get_wallet_balance · 3nVt…9dQx <i class="lat">0.3s</i></span><br>
         12.4 SOL and three tokens. The biggest bag is 34.1M of the token above — <span class="hl">the same 41% concentration</span>. The dev is the whale. <b>That's your risk.</b>
+      </div>
+      <div class="msg m-user">How close is it to graduating?</div>
+      <div class="msg m-bot">
+        <span class="toolrow">⚙ rigel_inspect_token_data · 7xKq…F2ab <i class="lat">0.2s</i></span><br>
+        <b>87.3%</b> — the curve holds 72.4 SOL and needs ~6 more to migrate. At the current buy pace, that's under an hour.
+        <span class="cbar g"><i style="width:87.3%"></i></span>
+        One thing to hold in your head: if the dev's 34.1M hits the book before migration, this never graduates. <b>Watch the wallet, not the chart.</b>
       </div>
     </div>
 
@@ -696,22 +719,21 @@ document.getElementById("copyConfigTop").addEventListener("click", function(){ d
     msgs.forEach(m => m.classList.remove("show"));
     typing.classList.remove("show");
     scenes.chat.scrollTop = 0;
-    const seeBottom = () => { scenes.chat.scrollTop = scenes.chat.scrollHeight; };
+    const seeBottom = () => requestAnimationFrame(() =>
+      scenes.chat.scrollTo({ top: scenes.chat.scrollHeight, behavior: "smooth" }));
+    const ask = async (userMsg, botMsg, thinkMs, holdMs) => {
+      userMsg.classList.add("show"); seeBottom();
+      await wait(900);
+      userMsg.insertAdjacentElement("afterend", typing); typing.classList.add("show"); seeBottom();
+      await wait(thinkMs);
+      typing.classList.remove("show");
+      botMsg.classList.add("show"); seeBottom();
+      await wait(holdMs);
+    };
     await wait(700);
-    msgs[0].classList.add("show");
-    await wait(900);
-    msgs[0].insertAdjacentElement("afterend", typing); typing.classList.add("show");
-    await wait(1500);
-    typing.classList.remove("show");
-    msgs[1].classList.add("show"); seeBottom();
-    await wait(2600);
-    msgs[2].classList.add("show"); seeBottom();
-    await wait(900);
-    msgs[2].insertAdjacentElement("afterend", typing); typing.classList.add("show"); seeBottom();
-    await wait(1300);
-    typing.classList.remove("show");
-    msgs[3].classList.add("show"); seeBottom();
-    await wait(6000);
+    await ask(msgs[0], msgs[1], 1500, 2600);   // rug check
+    await ask(msgs[2], msgs[3], 1300, 2400);   // dev wallet
+    await ask(msgs[4], msgs[5], 1200, 6500);   // graduation read
   }
 
   async function play(){
