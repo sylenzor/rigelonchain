@@ -124,9 +124,10 @@ h1 .owl-h{display:inline-block;vertical-align:middle;margin:0 10px;width:.95em;h
 .dstep{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--txt-3);
   border:1px solid var(--line);border-radius:999px;padding:5px 14px;transition:.3s}
 .dstep.on{color:#00FFA3;border-color:rgba(0,255,163,.4);background:rgba(0,255,163,.06)}
-.scene{display:none;min-height:400px}
-.scene.on{display:flex}
+.scene{height:620px;overflow-y:auto}
+.scene:not(.on){display:none !important}
 .scene#sceneTerm.on,.scene#sceneConf.on{display:block}
+@media (max-width:760px){.scene{height:680px}}
 .term,.conf{padding:24px 26px;font-family:var(--mono);font-size:13px;line-height:1.85;color:var(--txt-2);
   white-space:pre-wrap;word-break:break-word}
 .term .p{color:var(--txt-3)}
@@ -523,7 +524,8 @@ curve            <span class="g">87% complete</span>
       });
     }
   }
-  resize(); addEventListener("resize", resize);
+  resize();
+  addEventListener("resize", () => { resize(); if (reduced) draw(); });
   const T0 = performance.now();
   function draw(){
     const t = (performance.now() - T0) / 1000;
@@ -595,6 +597,9 @@ document.getElementById("copyConfigTop").addEventListener("click", function(){ d
   }
 
   async function actInstall(){
+    // clean slate for the replay: hide chat messages from the previous loop
+    msgs.forEach(m => m.classList.remove("show"));
+    typing.classList.remove("show");
     setScene("term", 0, "Terminal");
     termOut.innerHTML = '<span class="p">$ </span>' + caret;
     await wait(700);
@@ -643,20 +648,22 @@ document.getElementById("copyConfigTop").addEventListener("click", function(){ d
     setScene("chat", 2, "Claude Desktop");
     msgs.forEach(m => m.classList.remove("show"));
     typing.classList.remove("show");
+    scenes.chat.scrollTop = 0;
+    const seeBottom = () => { scenes.chat.scrollTop = scenes.chat.scrollHeight; };
     await wait(700);
     msgs[0].classList.add("show");
     await wait(900);
     msgs[0].insertAdjacentElement("afterend", typing); typing.classList.add("show");
     await wait(1500);
     typing.classList.remove("show");
-    msgs[1].classList.add("show");
+    msgs[1].classList.add("show"); seeBottom();
     await wait(2600);
-    msgs[2].classList.add("show");
+    msgs[2].classList.add("show"); seeBottom();
     await wait(900);
-    msgs[2].insertAdjacentElement("afterend", typing); typing.classList.add("show");
+    msgs[2].insertAdjacentElement("afterend", typing); typing.classList.add("show"); seeBottom();
     await wait(1300);
     typing.classList.remove("show");
-    msgs[3].classList.add("show");
+    msgs[3].classList.add("show"); seeBottom();
     await wait(6000);
   }
 
