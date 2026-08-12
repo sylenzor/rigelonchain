@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rigel — give your AI agent eyes on Solana</title>
 <meta name="description" content="Open-source MCP server for Solana. Ask your agent about any wallet, token, or pump.fun launch — balances, bonding-curve stats, rug risk. Read-only, runs locally.">
+<link rel="icon" type="image/svg+xml" href="/assets/owl.svg">
 <link rel="icon" type="image/png" href="/assets/fav.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,13 +68,15 @@ nav{position:sticky;top:0;z-index:50;background:rgba(10,10,11,.92);backdrop-filt
   border-bottom:1px solid var(--line)}
 .nav-in{max-width:var(--w-wide);margin:0 auto;padding:0 24px;height:var(--nav-h);
   display:flex;align-items:center;justify-content:space-between}
-.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:17px;color:var(--txt);padding:12px 8px;margin-left:-8px;border-radius:8px}
+.nav-l{display:flex;align-items:center;gap:6px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:17px;color:var(--txt);padding:8px 10px;margin-left:-10px;margin-right:14px;border-radius:8px}
 .logo:hover{color:var(--blue-2)}
-.logo .star{color:var(--blue);text-shadow:0 0 14px rgba(77,124,255,.9)}
+.logo .owl{display:block;filter:drop-shadow(0 0 8px rgba(3,225,255,.35))}
+.nav-l a.txt{color:var(--txt-2);padding:12px 12px;border-radius:8px;display:inline-flex;align-items:center;min-height:44px;font-size:14px}
+.nav-l a.txt:hover{color:var(--txt);background:var(--panel)}
 .nav-r{display:flex;align-items:center;gap:2px;font-size:14px}
 .nav-r a{color:var(--txt-2);padding:12px 12px;border-radius:8px;display:inline-flex;align-items:center;min-height:44px}
 .nav-r a:hover{color:var(--txt);background:var(--panel)}
-.nav-r .sep{width:1px;height:20px;background:var(--line-2);margin:0 10px}
 .nav-r a.icon{padding:12px}
 .nav-r a.icon svg{width:17px;height:17px;fill:currentColor}
 .nav-r a.pill{background:#fff;color:#0A0A0B;font-weight:600;padding:9px 20px;border-radius:999px;margin-left:10px;min-height:0}
@@ -84,11 +87,11 @@ nav{position:sticky;top:0;z-index:50;background:rgba(10,10,11,.92);backdrop-filt
 .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;color:var(--blue-2);
   text-transform:uppercase;display:block;margin-bottom:18px}
 h1{font-size:clamp(46px,7vw,80px);font-weight:700;letter-spacing:-.04em;line-height:1.02;margin-bottom:20px}
-h1 .grad{background:linear-gradient(115deg,#fff 20%,var(--blue-2) 55%,var(--blue) 90%);
+h1 .grad{background:linear-gradient(115deg,#00FFA3 0%,#03E1FF 45%,#DC1FFF 100%);
   -webkit-background-clip:text;background-clip:text;color:transparent;
-  filter:drop-shadow(0 0 34px rgba(77,124,255,.35))}
-h1 .star{display:inline-block;color:var(--blue);font-size:.66em;vertical-align:middle;margin:0 10px;
-  text-shadow:0 0 34px rgba(77,124,255,.95),0 0 80px rgba(77,124,255,.5)}
+  filter:drop-shadow(0 0 34px rgba(3,225,255,.3))}
+h1 .owl-h{display:inline-block;vertical-align:middle;margin:0 10px;width:.95em;height:.95em;
+  filter:drop-shadow(0 0 24px rgba(3,225,255,.4))}
 .hero .sub{font-size:17.5px;color:var(--txt-2);max-width:54ch;margin:0 auto 28px}
 .cta-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 24px;border-radius:999px;
@@ -113,12 +116,26 @@ h1 .star{display:inline-block;color:var(--blue);font-size:.66em;vertical-align:m
 .chat-bar .dots i{width:10px;height:10px;border-radius:50%}
 .chat-bar .dots i:nth-child(1){background:#FF5F57}.chat-bar .dots i:nth-child(2){background:#FEBC2E}.chat-bar .dots i:nth-child(3){background:#28C840}
 .chat-who{display:flex;align-items:center;gap:8px;margin-left:10px;font-size:13.5px;font-weight:600}
-.chat-who .star{color:var(--blue)}
+.chat-who .owl{display:block}
 .demo-tag{margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--txt-3);
   border:1px solid var(--line-2);border-radius:999px;padding:3px 11px}
 .chat-body{padding:22px 24px 26px;display:flex;flex-direction:column;gap:13px}
 .stamp{text-align:center;font-size:12px;color:var(--txt-3)}
 .msg{max-width:76%;padding:13px 17px;border-radius:14px;font-size:14.5px;line-height:1.6}
+/* demo animation states */
+.chat-body.anim .msg{opacity:0;transform:translateY(10px);transition:opacity .45s ease,transform .45s ease}
+.chat-body.anim .msg.show{opacity:1;transform:none}
+.typing{align-self:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:14px;border-bottom-left-radius:4px;
+  padding:14px 18px;display:none;gap:5px;align-items:center}
+.typing.show{display:inline-flex}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--txt-3);animation:tybl 1.1s ease-in-out infinite}
+.typing i:nth-child(2){animation-delay:.18s}
+.typing i:nth-child(3){animation-delay:.36s}
+@keyframes tybl{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+@media (prefers-reduced-motion: reduce){
+  .chat-body.anim .msg{opacity:1;transform:none;transition:none}
+  .typing{display:none !important}
+}
 .m-user{align-self:flex-end;background:rgba(77,124,255,.14);border:1px solid rgba(77,124,255,.3);border-bottom-right-radius:4px}
 .m-bot{align-self:flex-start;background:var(--panel);border:1px solid var(--line);border-bottom-left-radius:4px;color:var(--txt-2)}
 .m-bot b{color:var(--txt);font-weight:600}
@@ -235,12 +252,13 @@ footer{border-top:1px solid var(--line);margin-top:72px}
 
 <nav aria-label="Main">
   <div class="nav-in">
-    <a class="logo" href="#" aria-label="Rigel — back to top"><span class="star">✦</span>Rigel</a>
-    <div class="nav-r">
+    <div class="nav-l">
+      <a class="logo" href="#" aria-label="Rigel — back to top"><img class="owl" src="/assets/owl.svg" alt="" width="28" height="28">Rigel</a>
       <a class="txt" href="#tools">Tools</a>
       <a class="txt" href="#install">Install</a>
       <a class="txt" href="#faq">FAQ</a>
-      <span class="sep" aria-hidden="true"></span>
+    </div>
+    <div class="nav-r">
       <a class="icon" href="https://x.com/rigelonchain" target="_blank" rel="noopener" aria-label="Rigel on X, opens in new tab">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.64 7.58H.47l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93Zm-1.29 19.5h2.04L6.49 3.24H4.3l13.31 17.41Z"/></svg>
       </a>
@@ -254,30 +272,24 @@ footer{border-top:1px solid var(--line);margin-top:72px}
 
 <div class="hero">
   <span class="eyebrow">Open-source Solana MCP server</span>
-  <h1>Meet<span class="star">✦</span><span class="grad">Rigel</span></h1>
+  <h1>Meet<img class="owl-h" src="/assets/owl.svg" alt="" width="72" height="72"><span class="grad">Rigel</span></h1>
   <p class="sub">The missing eyes for your AI agent. Ask about any wallet, token, or pump.fun launch on Solana — it comes back with balances, curve stats, and a rug-risk read.</p>
   <div class="cta-row">
     <button class="btn btn-w" id="copyConfigTop">Copy Claude config</button>
     <a class="btn btn-o" href="https://github.com/sylenzor/rigelonchain" target="_blank" rel="noopener">View source</a>
   </div>
-  <span class="cmd-pill">
-    <span class="cmd" id="npxCmd">npx -y @rigel-protocol/solana-mcp</span>
-    <button class="cbtn" data-copy="npx -y @rigel-protocol/solana-mcp" aria-label="Copy npm command">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg>
-      Copy
-    </button>
-  </span>
 </div>
 
 <div class="chat-wrap">
   <div class="chat" role="img" aria-label="Simulated example: an agent using Rigel's tools to analyze a token">
     <div class="chat-bar">
       <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span class="chat-who"><span class="star">✦</span>Analyst</span>
+      <span class="chat-who"><img class="owl" src="/assets/owl.svg" alt="" width="20" height="20">Analyst</span>
       <span class="demo-tag">simulated demo</span>
     </div>
-    <div class="chat-body">
+    <div class="chat-body" id="chatBody">
       <div class="msg m-user">Is this pump.fun token a rug? 7xKq…F2ab</div>
+      <div class="typing" id="typing" aria-hidden="true"><i></i><i></i><i></i></div>
       <div class="msg m-bot">
         <span class="toolrow">⚙ rigel_analyze_rug_risk · 7xKq…F2ab</span><br>
         Checked — here's the shape of it:
@@ -440,7 +452,7 @@ curve            <span class="g">87% complete</span>
 
 <footer>
   <div class="foot-in">
-    <span class="fl"><span class="star">✦</span>Rigel</span>
+    <span class="fl"><img src="/assets/owl.svg" alt="" width="22" height="22" style="display:block">Rigel</span>
     <div class="fr">
       <a href="#tools">Tools</a>
       <a href="#install">Install</a>
@@ -512,6 +524,47 @@ document.querySelectorAll(".cbtn[data-copy]").forEach(btn =>
   btn.addEventListener("click", () => doCopy(btn, btn.dataset.copy, "Copied ✓")));
 document.getElementById("copyConfig").addEventListener("click", function(){ doCopy(this, CONFIG_TEXT, "Copied ✓"); });
 document.getElementById("copyConfigTop").addEventListener("click", function(){ doCopy(this, CONFIG_TEXT, "Copied ✓"); });
+
+/* ---- animated demo: the conversation plays like a product video, then loops ---- */
+(function(){
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const body = document.getElementById("chatBody");
+  const typing = document.getElementById("typing");
+  const msgs = [...body.querySelectorAll(".msg")];
+  body.classList.add("anim");
+
+  const wait = (ms) => new Promise(r => setTimeout(r, ms));
+  const moveTypingAfter = (el) => el.insertAdjacentElement("afterend", typing);
+
+  async function play(){
+    msgs.forEach(m => m.classList.remove("show"));
+    typing.classList.remove("show");
+    await wait(900);
+    // exchange 1
+    msgs[0].classList.add("show");                 // user question
+    await wait(900);
+    moveTypingAfter(msgs[0]); typing.classList.add("show");
+    await wait(1500);
+    typing.classList.remove("show");
+    msgs[1].classList.add("show");                 // risk report
+    await wait(2600);
+    // exchange 2
+    msgs[2].classList.add("show");                 // follow-up question
+    await wait(900);
+    moveTypingAfter(msgs[2]); typing.classList.add("show");
+    await wait(1300);
+    typing.classList.remove("show");
+    msgs[3].classList.add("show");                 // wallet answer
+    await wait(5200);                              // hold the full conversation
+    play();                                        // loop
+  }
+
+  // start when the demo scrolls into view (or immediately if already visible)
+  const io = new IntersectionObserver((entries) => {
+    if (entries.some(e => e.isIntersecting)) { io.disconnect(); play(); }
+  }, { threshold: .35 });
+  io.observe(body);
+})();
 </script>
 </body>
 </html>
