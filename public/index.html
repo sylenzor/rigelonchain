@@ -3,24 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rigel Protocol — the Solana MCP server</title>
-<meta name="description" content="Open-source MCP server that connects Claude, Cursor, and any MCP client to the Solana blockchain and pump.fun. Wallet balances, token inspection, rug-risk checks — from a prompt.">
+<title>Rigel — give your AI agent eyes on Solana</title>
+<meta name="description" content="Open-source MCP server for Solana. Ask your agent about any wallet, token, or pump.fun launch — balances, bonding-curve stats, rug risk. Read-only, runs locally.">
 <link rel="icon" type="image/png" href="/assets/fav.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#07080D;
-  --bg-2:#0C0E16;
-  --panel:#10131D;
-  --line:#1D2233;
-  --line-2:#2A3149;
-  --txt:#E6EAF4;
-  --txt-2:#A8B0C6;
-  --txt-3:#6E7891;
+  --bg:#0A0A0B;
+  --panel:#121215;
+  --panel-2:#17171B;
+  --line:#232329;
+  --line-2:#2E2E36;
+  --txt:#F2F2F5;
+  --txt-2:#9C9CA8;
+  --txt-3:#63636E;
   --blue:#4D7CFF;
-  --blue-2:#7AA0FF;
+  --blue-2:#8FB0FF;
   --green:#3DDC97;
   --amber:#FFC24D;
   --red:#FF6B81;
@@ -32,205 +32,258 @@ html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--txt);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
 ::selection{background:var(--blue);color:#fff}
 a{color:var(--blue-2);text-decoration:none}
-a:hover{color:#fff}
-a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 code,pre,.mono{font-family:var(--mono)}
 
-/* nav */
+/* ---- nav ---- */
 nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
-  padding:14px 32px;background:rgba(7,8,13,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;color:var(--txt);letter-spacing:-.01em}
-.logo .star{color:var(--blue);font-size:15px;text-shadow:0 0 12px rgba(77,124,255,.8)}
-.logo .proto{color:var(--txt-3);font-weight:500}
-.nav-links{display:flex;align-items:center;gap:6px}
-.nav-links a{padding:9px 13px;font-size:14px;color:var(--txt-2);border-radius:8px}
-.nav-links a:hover{color:var(--txt);background:var(--panel)}
-.nav-links a.gh{border:1px solid var(--line-2);margin-left:8px;color:var(--txt)}
-.nav-links a.gh:hover{border-color:var(--blue)}
+  padding:16px 36px;background:rgba(10,10,11,.85);backdrop-filter:blur(12px)}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16.5px;color:var(--txt)}
+.logo .star{color:var(--blue);text-shadow:0 0 14px rgba(77,124,255,.9)}
+.nav-r{display:flex;align-items:center;gap:22px;font-size:14px}
+.nav-r a{color:var(--txt-2)}
+.nav-r a:hover{color:var(--txt)}
+.nav-r a.pill{background:#fff;color:#0A0A0B;font-weight:600;padding:8px 18px;border-radius:999px}
+.nav-r a.pill:hover{background:var(--blue-2);color:#0A0A0B}
 
-/* hero */
-.hero{max-width:1120px;margin:0 auto;padding:96px 32px 48px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
-.badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--blue-2);
-  border:1px solid var(--line-2);border-radius:999px;padding:5px 14px;margin-bottom:22px;background:var(--bg-2)}
-.badge .dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
-h1{font-size:clamp(34px,4.6vw,54px);line-height:1.08;letter-spacing:-.03em;font-weight:800;margin-bottom:18px}
-h1 .grad{background:linear-gradient(100deg,var(--blue) 0%,var(--blue-2) 50%,#B7CBFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
-.sub{font-size:17px;color:var(--txt-2);max-width:46ch;margin-bottom:30px}
-.sub b{color:var(--txt);font-weight:600}
-.cta-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
-.install{display:flex;align-items:center;gap:14px;background:var(--bg-2);border:1px solid var(--line-2);
-  border-radius:10px;padding:13px 18px;font-family:var(--mono);font-size:13.5px;color:var(--txt)}
-.install .p{color:var(--txt-3);user-select:none}
-.copy-btn{background:none;border:none;color:var(--txt-3);cursor:pointer;font-family:var(--mono);font-size:12px;padding:6px 8px;border-radius:6px}
-.copy-btn:hover{color:var(--blue-2);background:var(--panel)}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;font-size:14.5px;font-weight:600;transition:.15s}
-.btn-gh{border:1px solid var(--line-2);color:var(--txt)}
-.btn-gh:hover{border-color:var(--blue);color:#fff}
-.hero-note{margin-top:18px;font-size:13px;color:var(--txt-3)}
-.hero-note b{color:var(--green);font-weight:600}
+/* ---- hero ---- */
+.hero{max-width:880px;margin:0 auto;text-align:center;padding:88px 24px 30px}
+h1{font-size:clamp(42px,6.5vw,72px);font-weight:800;letter-spacing:-.035em;line-height:1.05;margin-bottom:22px}
+h1 .star{color:var(--blue);text-shadow:0 0 30px rgba(77,124,255,.8);font-size:.75em;vertical-align:middle;margin:0 6px}
+.hero .sub{font-size:19px;color:var(--txt-2);max-width:56ch;margin:0 auto 34px}
+.cta-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:26px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:999px;font-size:15px;font-weight:600;transition:.15s;cursor:pointer;border:none;font-family:var(--sans)}
+.btn-w{background:#fff;color:#0A0A0B}
+.btn-w:hover{background:var(--blue-2)}
+.btn-o{background:transparent;color:var(--txt);border:1px solid var(--line-2)}
+.btn-o:hover{border-color:var(--txt-2)}
+.addr-pill{display:inline-flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);
+  border-radius:999px;padding:9px 10px 9px 8px;font-family:var(--mono);font-size:12.5px;color:var(--txt-2)}
+.addr-pill .tag{background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:3px 11px;color:var(--txt-3);font-size:11px}
+.copy-mini{background:none;border:none;color:var(--txt-3);font-family:var(--mono);font-size:12px;cursor:pointer;padding:4px 10px;border-radius:999px}
+.copy-mini:hover{color:var(--blue-2)}
 
-/* terminal */
-.term{background:#0A0C13;border:1px solid var(--line-2);border-radius:14px;overflow:hidden;
-  box-shadow:0 24px 80px rgba(0,0,0,.55),0 0 0 1px rgba(77,124,255,.06),0 0 90px rgba(77,124,255,.07)}
-.term-bar{display:flex;align-items:center;gap:7px;padding:11px 16px;border-bottom:1px solid var(--line);background:var(--bg-2)}
-.term-bar i{width:11px;height:11px;border-radius:50%;background:var(--line-2)}
-.term-bar i:nth-child(1){background:#FF5F57}.term-bar i:nth-child(2){background:#FEBC2E}.term-bar i:nth-child(3){background:#28C840}
-.term-bar span{margin-left:10px;font-family:var(--mono);font-size:11.5px;color:var(--txt-3)}
-.term-body{padding:20px 22px;font-family:var(--mono);font-size:12.8px;line-height:1.75}
-.t-user{color:var(--txt)}
-.t-user::before{content:"you › ";color:var(--txt-3)}
-.t-tool{color:var(--blue-2);margin:10px 0 2px}
-.t-tool::before{content:"⚙ ";opacity:.8}
-.t-dim{color:var(--txt-3)}
-.t-out{color:var(--txt-2);white-space:pre;overflow-x:auto}
-.t-out .g{color:var(--green)}
-.t-out .a{color:var(--amber)}
-.t-out .r{color:var(--red)}
-.t-claude{color:var(--txt);margin-top:10px}
-.t-claude::before{content:"claude › ";color:var(--blue)}
+/* ---- chat demo ---- */
+.chat-wrap{max-width:1000px;margin:44px auto 0;padding:0 24px}
+.chat{background:#0E0E11;border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  box-shadow:0 30px 90px rgba(0,0,0,.6),0 0 110px rgba(77,124,255,.05)}
+.chat-bar{display:flex;align-items:center;gap:8px;padding:13px 18px;border-bottom:1px solid var(--line);background:var(--panel)}
+.chat-bar i{width:11px;height:11px;border-radius:50%}
+.chat-bar i:nth-child(1){background:#FF5F57}.chat-bar i:nth-child(2){background:#FEBC2E}.chat-bar i:nth-child(3){background:#28C840}
+.chat-bar .who{display:flex;align-items:center;gap:8px;margin-left:12px;font-size:13px;font-weight:600}
+.chat-bar .who .star{color:var(--blue)}
+.chat-body{padding:26px 26px 30px;display:flex;flex-direction:column;gap:14px}
+.stamp{text-align:center;font-size:11.5px;color:var(--txt-3)}
+.msg{max-width:74%;padding:12px 16px;border-radius:14px;font-size:14px;line-height:1.6}
+.m-user{align-self:flex-end;background:var(--panel-2);border:1px solid var(--line-2);border-bottom-right-radius:4px}
+.m-bot{align-self:flex-start;background:var(--panel);border:1px solid var(--line);border-bottom-left-radius:4px;color:var(--txt-2)}
+.m-bot .ok{color:var(--green)}
+.m-bot .warn{color:var(--amber)}
+.m-bot b{color:var(--txt);font-weight:600}
+.m-bot .toolcall{display:block;font-family:var(--mono);font-size:11.5px;color:var(--blue-2);margin-bottom:8px}
+.m-bot ul{list-style:none;margin:6px 0}
+.m-bot li{padding:1px 0}
 
-/* sections */
-section{max-width:1120px;margin:0 auto;padding:72px 32px 0}
-.sec-kicker{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-2);margin-bottom:10px}
-h2{font-size:clamp(24px,3vw,32px);letter-spacing:-.02em;font-weight:700;margin-bottom:12px}
-.sec-sub{color:var(--txt-2);max-width:60ch;margin-bottom:36px;font-size:15.5px}
+/* ---- sections ---- */
+section{max-width:1080px;margin:0 auto;padding:96px 24px 0}
+.sec-head{text-align:center;max-width:640px;margin:0 auto 44px}
+h2{font-size:clamp(28px,4vw,40px);font-weight:800;letter-spacing:-.03em;line-height:1.15;margin-bottom:14px}
+.sec-head p{color:var(--txt-2);font-size:16.5px}
 
-/* tools */
-.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
-.tool{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px 24px 20px;transition:border-color .2s, transform .2s}
-.tool:hover{border-color:var(--line-2);transform:translateY(-2px)}
-.tool .tname{font-family:var(--mono);font-size:13px;color:var(--blue-2);margin-bottom:12px;display:inline-block;
-  background:rgba(77,124,255,.08);border:1px solid rgba(77,124,255,.2);border-radius:7px;padding:4px 10px}
-.tool h3{font-size:16.5px;font-weight:650;margin-bottom:8px}
-.tool p{font-size:14px;color:var(--txt-2)}
-.tool .io{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11.5px;color:var(--txt-3)}
-.tool .io b{color:var(--txt-2);font-weight:500}
+/* ---- feature grid ---- */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px 28px;overflow:hidden}
+.card h3{font-size:17px;font-weight:700;margin-bottom:8px}
+.card > p{font-size:14.5px;color:var(--txt-2);max-width:52ch}
+.card .visual{margin-top:22px;border-radius:14px;padding:22px;position:relative}
+.v-green{background:radial-gradient(120% 160% at 0% 0%,rgba(61,220,151,.18),transparent 55%),
+          radial-gradient(120% 160% at 100% 100%,rgba(255,194,77,.14),transparent 55%),var(--panel-2)}
+.v-violet{background:radial-gradient(120% 160% at 0% 100%,rgba(255,107,129,.14),transparent 55%),
+           radial-gradient(120% 160% at 100% 0%,rgba(124,77,255,.2),transparent 55%),var(--panel-2)}
+.v-blue{background:radial-gradient(140% 150% at 50% 0%,rgba(77,124,255,.16),transparent 60%),var(--panel-2)}
+.mini{background:#101014;border:1px solid var(--line-2);border-radius:11px;overflow:hidden}
+.mini-head{display:flex;align-items:center;justify-content:space-between;padding:10px 15px;border-bottom:1px solid var(--line);font-size:12.5px;font-weight:600}
+.mini-head .st{font-family:var(--mono);font-size:10.5px;color:var(--amber);border:1px solid rgba(255,194,77,.35);border-radius:999px;padding:2px 9px}
+.mini-row{display:flex;align-items:baseline;gap:10px;padding:9px 15px;border-bottom:1px solid var(--line);font-size:12px}
+.mini-row:last-child{border-bottom:none}
+.mini-row .fn{font-family:var(--mono);color:var(--blue-2);font-size:11.5px}
+.mini-row .d{color:var(--txt-3)}
+.chip-row{display:flex;gap:8px;padding:11px 15px;flex-wrap:wrap}
+.chip{font-size:11px;color:var(--txt-2);border:1px solid var(--line-2);border-radius:999px;padding:3px 11px}
+.rep{font-family:var(--mono);font-size:12px;line-height:1.85;color:var(--txt-2);white-space:pre}
+.rep .g{color:var(--green)}.rep .a{color:var(--amber)}.rep .dim{color:var(--txt-3)}
+.bubble{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:11px 14px;font-size:13px;color:var(--txt-2)}
+.bubble + .bubble{margin-top:10px}
+.stars-play{display:flex;gap:10px;justify-content:center;padding:14px 0 4px;font-size:20px}
+.stars-play span:nth-child(1){color:#B48CFF;text-shadow:0 0 12px #B48CFF}
+.stars-play span:nth-child(2){color:#FF7DA0;text-shadow:0 0 12px #FF7DA0}
+.stars-play span:nth-child(3){color:#FFC24D;text-shadow:0 0 12px #FFC24D}
 
-/* steps */
-.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;counter-reset:step}
-.step{background:var(--bg-2);border:1px solid var(--line);border-radius:14px;padding:22px 24px}
-.step::before{counter-increment:step;content:"0" counter(step);font-family:var(--mono);font-size:12px;color:var(--blue);display:block;margin-bottom:10px}
-.step h3{font-size:15.5px;font-weight:650;margin-bottom:6px}
-.step p{font-size:13.5px;color:var(--txt-2)}
-.step code{font-size:12px;color:var(--blue-2);background:var(--panel);padding:2px 7px;border-radius:5px}
+/* ---- steps ---- */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px 28px}
+.step .n{width:30px;height:30px;border-radius:50%;background:var(--panel-2);border:1px solid var(--line-2);
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;margin-bottom:16px}
+.step h3{font-size:16px;font-weight:700;margin-bottom:7px}
+.step p{font-size:14px;color:var(--txt-2)}
+.step .code{margin-top:16px;background:#101014;border:1px solid var(--line-2);border-radius:10px;
+  padding:11px 14px;font-family:var(--mono);font-size:12px;color:var(--txt-2);overflow-x:auto;white-space:nowrap}
+.step .code .g{color:var(--green)}
 
-/* config block */
-.config{position:relative;background:#0A0C13;border:1px solid var(--line-2);border-radius:14px;overflow:hidden}
-.config-head{display:flex;align-items:center;justify-content:space-between;padding:11px 18px;border-bottom:1px solid var(--line);background:var(--bg-2)}
-.config-head span{font-family:var(--mono);font-size:12px;color:var(--txt-3)}
-.config pre{padding:20px 22px;font-size:12.8px;line-height:1.7;overflow-x:auto;color:var(--txt-2)}
-.config .k{color:var(--blue-2)}
-.config .s{color:var(--green)}
+/* ---- config ---- */
+.conf-caption{text-align:center;font-size:14px;color:var(--txt-2);margin-bottom:16px}
+.conf-caption code{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:2px 8px;font-size:12.5px}
+.config{position:relative;max-width:680px;margin:0 auto;background:#101014;border:1px solid var(--line-2);border-radius:16px}
+.config pre{padding:22px 24px;font-size:12.8px;line-height:1.75;overflow-x:auto;color:var(--txt-2)}
+.config .k{color:var(--blue-2)}.config .s{color:var(--green)}
+.config .copy-mini{position:absolute;top:12px;right:14px}
+.conf-note{text-align:center;font-size:13px;color:var(--txt-3);max-width:56ch;margin:16px auto 0}
+.conf-note b{color:var(--green);font-weight:600}
 
-/* trust */
-.trust{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
-.trust-item{border:1px solid var(--line);border-radius:14px;padding:20px 22px;background:var(--panel)}
-.trust-item h3{font-size:15px;font-weight:650;margin-bottom:6px;display:flex;align-items:center;gap:9px}
-.trust-item h3 .ic{color:var(--green)}
-.trust-item p{font-size:13.5px;color:var(--txt-2)}
+/* ---- faq ---- */
+.faq{max-width:680px;margin:0 auto}
+details{border-bottom:1px solid var(--line)}
+summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+  padding:20px 6px;font-size:16px;font-weight:600}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--txt-3);font-size:20px;font-weight:400;transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{padding:0 6px 20px;font-size:14.5px;color:var(--txt-2);max-width:60ch}
+details code{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:1px 7px;font-size:12.5px}
 
-/* footer */
-footer{max-width:1120px;margin:80px auto 0;padding:26px 32px 40px;border-top:1px solid var(--line);
+/* ---- footer ---- */
+footer{max-width:1080px;margin:90px auto 0;padding:28px 24px 44px;border-top:1px solid var(--line);
   display:flex;flex-wrap:wrap;gap:14px 30px;align-items:center;justify-content:space-between;font-size:13.5px;color:var(--txt-3)}
-footer .f-logo{display:flex;align-items:center;gap:8px;color:var(--txt-2);font-weight:600}
-footer .f-logo .star{color:var(--blue)}
-footer nav2{display:flex;gap:20px}
-.f-links2{display:flex;flex-wrap:wrap;gap:4px 8px}
-.f-links2 a{color:var(--txt-3);padding:8px 8px}
-.f-links2 a:hover{color:var(--txt)}
+footer .fl{display:flex;align-items:center;gap:8px;color:var(--txt-2);font-weight:600}
+footer .fl .star{color:var(--blue)}
+footer .fr{display:flex;gap:6px 10px;flex-wrap:wrap}
+footer .fr a{color:var(--txt-3);padding:8px 8px}
+footer .fr a:hover{color:var(--txt)}
 
-@media (max-width:900px){
-  .hero{grid-template-columns:1fr;padding-top:64px;gap:40px}
-  .nav-links a:not(.gh){display:none}
+@media (max-width:640px){
+  nav{padding:14px 20px}
+  .nav-r{gap:14px}
+  .msg{max-width:92%}
 }
 @media (prefers-reduced-motion:no-preference){
-  .term{animation:rise .8s cubic-bezier(.2,.7,.3,1) backwards .15s}
-  .hero > div:first-child{animation:rise .8s cubic-bezier(.2,.7,.3,1) backwards}
-  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .hero,.chat-wrap{animation:rise .8s cubic-bezier(.2,.7,.3,1) backwards}
+  .chat-wrap{animation-delay:.12s}
+  @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 }
 </style>
 </head>
 <body>
 
 <nav>
-  <a class="logo" href="#"><span class="star">✦</span>rigel<span class="proto">protocol</span></a>
-  <div class="nav-links">
-    <a href="#tools">Tools</a>
-    <a href="#install">Install</a>
-    <a href="#security">Security</a>
-    <a class="gh" href="https://github.com/sylenzor/rigelonchain" target="_blank" rel="noopener" aria-label="Rigel Protocol on GitHub, opens in new tab">GitHub ↗</a>
+  <a class="logo" href="#"><span class="star">✦</span>rigel</a>
+  <div class="nav-r">
+    <a href="https://x.com/rigelonchain" target="_blank" rel="noopener" aria-label="Rigel on X, opens in new tab">X</a>
+    <a href="https://github.com/sylenzor/rigelonchain" target="_blank" rel="noopener" aria-label="Rigel on GitHub, opens in new tab">GitHub</a>
+    <a class="pill" href="#install">npm</a>
   </div>
 </nav>
 
 <div class="hero">
-  <div>
-    <span class="badge"><span class="dot"></span>open source · MCP · Solana</span>
-    <h1>Give your AI <span class="grad">eyes on Solana.</span></h1>
-    <p class="sub"><b>Rigel Protocol</b> is an open-source MCP server that connects Claude, Cursor, and any MCP client to the Solana blockchain and pump.fun — wallet balances, token data, and rug-risk checks, straight from a prompt.</p>
-    <div class="cta-row">
-      <span class="install"><span class="p">$</span><span id="installCmd">npm i -g @rigel-protocol/solana-mcp</span><button class="copy-btn" data-copy="npm i -g @rigel-protocol/solana-mcp" aria-label="Copy install command">copy</button></span>
-      <a class="btn btn-gh" href="https://github.com/sylenzor/rigelonchain" target="_blank" rel="noopener">★ Star on GitHub</a>
-    </div>
-    <p class="hero-note"><b>Read-only.</b> No private keys, no signing, no custody — Rigel only reads public chain data.</p>
+  <h1>Meet<span class="star">✦</span>Rigel</h1>
+  <p class="sub">The missing eyes for your AI agent. Ask about any wallet, token, or pump.fun launch on Solana — it comes back with balances, curve stats, and a rug-risk read.</p>
+  <div class="cta-row">
+    <button class="btn btn-w" id="copyConfigTop">Copy MCP config</button>
+    <a class="btn btn-o" href="https://github.com/sylenzor/rigelonchain" target="_blank" rel="noopener">View source</a>
   </div>
+  <span class="addr-pill"><span class="tag">npx</span><span id="npxCmd">npx -y @rigel-protocol/solana-mcp</span><button class="copy-mini" data-copy="npx -y @rigel-protocol/solana-mcp" aria-label="Copy npx command">copy</button></span>
+</div>
 
-  <div class="term" aria-label="Example of Rigel Protocol used from Claude Desktop">
-    <div class="term-bar"><i></i><i></i><i></i><span>claude desktop — rigel-solana-mcp</span></div>
-    <div class="term-body">
-      <div class="t-user">is this pump.fun token a rug? 7xKq…F2ab</div>
-      <div class="t-tool">rigel_analyze_rug_risk <span class="t-dim">(tokenAddress: "7xKq…F2ab")</span></div>
-      <div class="t-out">
-mint authority   <span class="g">revoked ✓</span>
-freeze authority <span class="g">none ✓</span>
-top 10 holders   <span class="a">41.2% ⚠</span>
-bonding curve    <span class="g">87% complete</span>
-risk             <span class="a">MEDIUM</span></div>
-      <div class="t-claude">Mint and freeze authority are clean, but the top 10 wallets hold 41% of supply — one seller can move this hard. Medium risk.</div>
+<div class="chat-wrap">
+  <div class="chat" aria-label="Example conversation with an agent using Rigel">
+    <div class="chat-bar"><i></i><i></i><i></i><span class="who"><span class="star">✦</span>Analyst</span></div>
+    <div class="chat-body">
+      <div class="stamp">Today 1:52 AM</div>
+      <div class="msg m-user">is this pump.fun token a rug? 7xKq…F2ab</div>
+      <div class="msg m-bot">
+        <span class="toolcall">⚙ rigel_analyze_rug_risk · 7xKq…F2ab</span>
+        checked. here's the shape of it:
+        <ul>
+          <li><span class="ok">✓</span> <b>mint authority</b> — revoked</li>
+          <li><span class="ok">✓</span> <b>freeze authority</b> — none</li>
+          <li><span class="warn">⚠</span> <b>top 10 holders</b> — 41.2% of supply</li>
+          <li><span class="ok">✓</span> <b>bonding curve</b> — 87% complete</li>
+        </ul>
+        authorities are clean, but the top 10 wallets hold 41% — one seller moves this hard. <b>medium risk.</b>
+      </div>
+      <div class="msg m-user">what's in the dev's wallet?</div>
+      <div class="msg m-bot">
+        <span class="toolcall">⚙ rigel_get_wallet_balance · 3nVt…9dQx</span>
+        12.4 SOL and three tokens. biggest bag: 34.1M of the token you just asked about — that's the 41% concentration. dev is the whale. <b>that's your risk.</b>
+      </div>
     </div>
   </div>
 </div>
 
 <section id="tools">
-  <div class="sec-kicker">Tools</div>
-  <h2>Three tools. Zero setup on-chain.</h2>
-  <p class="sec-sub">Registered automatically the moment your MCP client connects. Ask in plain language — your AI picks the tool.</p>
-  <div class="tools">
-    <div class="tool">
-      <span class="tname">rigel_get_wallet_balance</span>
-      <h3>Wallet X-ray</h3>
-      <p>SOL balance plus a summary of major SPL token holdings for any public wallet address.</p>
-      <div class="io"><b>in</b> walletAddress · <b>out</b> SOL, token list, USD est.</div>
+  <div class="sec-head">
+    <h2>Ask the chain like you'd text a friend</h2>
+    <p>Rigel is an open-source MCP server. Add it once and your agent can read Solana — no dashboards, no explorers, no tab-switching.</p>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <h3>Works where your agent works</h3>
+      <p>One MCP server, every client. Your agent picks up the tools and uses them like any other skill.</p>
+      <div class="visual v-green">
+        <div class="mini">
+          <div class="mini-head">Tools<span class="st">✦ Connected</span></div>
+          <div class="mini-row"><span class="fn">rigel_get_wallet_balance</span><span class="d">SOL + SPL holdings</span></div>
+          <div class="mini-row"><span class="fn">rigel_inspect_token_data</span><span class="d">curve %, supply, metadata</span></div>
+          <div class="mini-row"><span class="fn">rigel_analyze_rug_risk</span><span class="d">authority + holder check</span></div>
+          <div class="chip-row"><span class="chip">Claude Desktop</span><span class="chip">Cursor</span><span class="chip">Claude Code</span></div>
+        </div>
+      </div>
     </div>
-    <div class="tool">
-      <span class="tname">rigel_inspect_token_data</span>
-      <h3>Token inspector</h3>
-      <p>Live metadata, supply stats, bonding-curve SOL, and completion percentage for pump.fun tokens.</p>
-      <div class="io"><b>in</b> tokenAddress · <b>out</b> metadata, curve %, supply</div>
+    <div class="card">
+      <h3>Reads everything, touches nothing</h3>
+      <p>No private keys, no signing, no custody. Rigel can look at any address on the chain — it can never move a lamport.</p>
+      <div class="visual v-violet">
+        <div class="mini" style="padding:16px 18px">
+          <div class="rep">mint authority   <span class="g">revoked ✓</span>
+freeze authority <span class="g">none ✓</span>
+top 10 holders   <span class="a">41.2% ⚠</span>
+curve            <span class="g">87% complete</span>
+<span class="dim">read-only · no key required</span></div>
+        </div>
+      </div>
     </div>
-    <div class="tool">
-      <span class="tname">rigel_analyze_rug_risk</span>
-      <h3>Rug radar</h3>
-      <p>Mint &amp; freeze authority status and top-holder concentration, folded into a formatted risk report.</p>
-      <div class="io"><b>in</b> tokenAddress · <b>out</b> risk report (low/med/high)</div>
+    <div class="card">
+      <h3>Runs on your machine</h3>
+      <p>Local stdio transport straight into your client. Your prompts never pass through anyone's backend — and the RPC is yours to choose.</p>
+      <div class="visual v-blue">
+        <div class="bubble">Connected over stdio. Queries go from your machine to your RPC. Nothing in between.</div>
+        <div class="bubble mono" style="font-size:12px">SOLANA_RPC_URL=https://your-rpc — public, Helius, Triton, or your own node.</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Small enough to audit over coffee</h3>
+      <p>MIT-licensed TypeScript on the official MCP SDK. Read every line before you run it. PRs welcome.</p>
+      <div class="visual v-green">
+        <div class="stars-play" aria-hidden="true"><span>✦</span><span>✦</span><span>✦</span></div>
+        <div class="bubble" style="text-align:center">Open source · TypeScript · Zod-validated inputs · stderr logging, clean stdout</div>
+      </div>
     </div>
   </div>
 </section>
 
 <section id="install">
-  <div class="sec-kicker">Install</div>
-  <h2>Connected in under a minute.</h2>
-  <p class="sec-sub">Works with Claude Desktop, Cursor, and any client that speaks MCP over stdio.</p>
-  <div class="steps">
-    <div class="step"><h3>Install the server</h3><p>Grab it from npm: <code>npm i -g @rigel-protocol/solana-mcp</code></p></div>
-    <div class="step"><h3>Add the config</h3><p>Paste the block below into <code>claude_desktop_config.json</code> and restart Claude.</p></div>
-    <div class="step"><h3>Ask your AI</h3><p>"What's in this wallet?" · "Inspect this token" · "Is this a rug?" — Rigel handles the chain.</p></div>
+  <div class="sec-head">
+    <h2>From question to answer in one message</h2>
+    <p>No forms, no API keys, no accounts. Your agent already knows how to do this — Rigel just gives it the chain.</p>
   </div>
-  <div style="height:18px"></div>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><h3>Add Rigel to your agent</h3><p>One block in your MCP config, or run it straight from npm.</p><div class="code">npx -y @rigel-protocol/solana-mcp</div></div>
+    <div class="step"><div class="n">2</div><h3>Ask about anything on-chain</h3><p>A wallet, a mint, a fresh pump.fun launch — plain language is the interface.</p><div class="code">&gt; is this token a rug? 7xKq…F2ab</div></div>
+    <div class="step"><div class="n">3</div><h3>Get the read back</h3><p>Balances, curve completion, authority status, holder concentration — formatted, sourced from your RPC.</p><div class="code"><span class="g">✓</span> report → medium risk · 41% top-10</div></div>
+  </div>
+  <div style="height:44px"></div>
+  <p class="conf-caption">Works with Claude Desktop, Cursor, and Claude Code. Paste into your <code>claude_desktop_config.json</code>:</p>
   <div class="config">
-    <div class="config-head">
-      <span>claude_desktop_config.json</span>
-      <button class="copy-btn" id="copyConfig" aria-label="Copy configuration">copy</button>
-    </div>
+    <button class="copy-mini" id="copyConfig" aria-label="Copy configuration">copy</button>
     <pre id="configBlock">{
   <span class="k">"mcpServers"</span>: {
     <span class="k">"rigel-solana"</span>: {
@@ -241,39 +294,62 @@ risk             <span class="a">MEDIUM</span></div>
   }
 }</pre>
   </div>
+  <p class="conf-note"><b>No keys, ever.</b> The only thing in the config is which RPC to read from. Rigel is read-only by design.</p>
 </section>
 
-<section id="security">
-  <div class="sec-kicker">Security</div>
-  <h2>Built to be trusted with nothing.</h2>
-  <p class="sec-sub">The safest wallet integration is the one that never touches a wallet.</p>
-  <div class="trust">
-    <div class="trust-item"><h3><span class="ic">✓</span>Read-only by design</h3><p>No private keys, no transaction signing, no custody. Rigel can look, never touch.</p></div>
-    <div class="trust-item"><h3><span class="ic">✓</span>Runs on your machine</h3><p>Local stdio transport — your prompts and queries never pass through a third-party server.</p></div>
-    <div class="trust-item"><h3><span class="ic">✓</span>Open source</h3><p>MIT-licensed TypeScript. Read every line before you run it. PRs welcome.</p></div>
-    <div class="trust-item"><h3><span class="ic">✓</span>Your RPC, your rules</h3><p>Point it at any Solana RPC via <code style="font-size:12px">SOLANA_RPC_URL</code> — public, Helius, Triton, or your own node.</p></div>
+<section id="faq">
+  <div class="sec-head"><h2>Questions, answered</h2></div>
+  <div class="faq">
+    <details>
+      <summary>Can it steal my keys?</summary>
+      <p>It never has them. Rigel takes no private keys, no seed phrases, and has no signing code at all — the config contains only an RPC URL. It reads public chain data, nothing else.</p>
+    </details>
+    <details>
+      <summary>Which agents does it work with?</summary>
+      <p>Anything that speaks MCP over stdio: Claude Desktop, Claude Code, Cursor, and most agent frameworks. If your client has an <code>mcpServers</code> config block, it works.</p>
+    </details>
+    <details>
+      <summary>Does it cost anything?</summary>
+      <p>No. It's MIT-licensed open source, and reading the chain is free. If you hammer it hard you may want a free API key from an RPC provider like Helius — set it via <code>SOLANA_RPC_URL</code>.</p>
+    </details>
+    <details>
+      <summary>Is the rug-risk score financial advice?</summary>
+      <p>No. It's a report of on-chain facts — authority status, holder concentration, curve state. What you do with those facts is entirely yours. A "low risk" reading is not a recommendation to buy anything.</p>
+    </details>
+    <details>
+      <summary>Where does the data come from?</summary>
+      <p>Directly from the Solana RPC you configure, plus pump.fun on-chain program accounts for bonding-curve tokens. No third-party API sits between your agent and the chain.</p>
+    </details>
   </div>
 </section>
 
 <footer>
-  <span class="f-logo"><span class="star">✦</span> Rigel Protocol</span>
-  <div class="f-links2">
+  <span class="fl"><span class="star">✦</span>Rigel Protocol</span>
+  <div class="fr">
     <a href="#tools">Tools</a>
     <a href="#install">Install</a>
-    <a href="#security">Security</a>
-    <a href="https://github.com/sylenzor/rigelonchain" target="_blank" rel="noopener">GitHub ↗</a>
+    <a href="#faq">FAQ</a>
+    <a href="https://github.com/sylenzor/rigelonchain" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://x.com/rigelonchain" target="_blank" rel="noopener">X</a>
   </div>
-  <span>MIT © 2026 Rigel Protocol · not financial advice</span>
+  <span>MIT © 2026 · not financial advice</span>
 </footer>
 
 <script>
-document.querySelectorAll(".copy-btn").forEach(btn => {
-  btn.addEventListener("click", async () => {
-    const text = btn.dataset.copy || document.getElementById("configBlock")?.innerText || "";
-    try { await navigator.clipboard.writeText(text); btn.textContent = "copied ✓"; }
-    catch(e){ btn.textContent = "select + ctrl-c"; }
-    setTimeout(() => btn.textContent = "copy", 1500);
-  });
+const CONFIG_TEXT = document.getElementById("configBlock").innerText;
+async function doCopy(btn, text, done){
+  try { await navigator.clipboard.writeText(text); btn.textContent = done || "copied ✓"; }
+  catch(e){ btn.textContent = "select + ctrl-c"; }
+}
+document.querySelectorAll(".copy-mini[data-copy]").forEach(btn => {
+  btn.addEventListener("click", () => { doCopy(btn, btn.dataset.copy); setTimeout(() => btn.textContent = "copy", 1500); });
+});
+document.getElementById("copyConfig").addEventListener("click", function(){
+  doCopy(this, CONFIG_TEXT); setTimeout(() => this.textContent = "copy", 1500);
+});
+document.getElementById("copyConfigTop").addEventListener("click", function(){
+  const old = this.textContent;
+  doCopy(this, CONFIG_TEXT, "Copied ✓"); setTimeout(() => this.textContent = old, 1500);
 });
 </script>
 </body>
