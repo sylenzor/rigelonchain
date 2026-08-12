@@ -4,7 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rigel — give your AI agent eyes on Solana</title>
-<meta name="description" content="Open-source MCP server for Solana. Ask your agent about any wallet, token, or pump.fun launch — balances, bonding-curve stats, rug risk. Read-only, runs locally.">
+<meta name="description" content="Open-source MCP server for Solana. Ask your agent about any wallet, token, or pump.fun launch — balances, rug risk, bundle detection, deployer history, live market reads. 7 tools, read-only, runs locally.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Rigel — give your AI agent eyes on Solana">
+<meta property="og:description" content="Open-source MCP server: rug checks, bundle detection, deployer rap sheets, live market reads. 7 tools, read-only, no keys. npx -y @rigel-protocol/solana-mcp">
+<meta property="og:url" content="https://rigelonchain.com/">
+<meta property="og:image" content="https://rigelonchain.com/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Rigel — give your AI agent eyes on Solana">
+<meta name="twitter:description" content="Open-source Solana MCP server. 7 read-only tools: rug checks, bundle detection, deployer history, live market. No keys, ever.">
+<meta name="twitter:image" content="https://rigelonchain.com/assets/og.png">
 <link rel="icon" type="image/svg+xml" href="/assets/owl.svg">
 <link rel="icon" type="image/png" href="/assets/fav.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,7 +36,7 @@
   --red:#FF6B81;
   --w-wide:1040px;
   --w-narrow:720px;
-  --nav-h:64px;
+  --nav-h:74px;
   --r-lg:16px;
   --r-md:12px;
   --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
@@ -71,20 +80,20 @@ nav{position:sticky;top:0;z-index:50;background:rgba(10,10,11,.92);backdrop-filt
 .nav-in{max-width:var(--w-wide);margin:0 auto;padding:0 24px;height:var(--nav-h);
   display:flex;align-items:center;justify-content:space-between}
 .nav-l{display:flex;align-items:center;gap:8px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:21px;color:var(--txt);padding:8px 10px;margin-left:-10px;margin-right:16px;border-radius:8px}
+.logo{display:flex;align-items:center;gap:11px;font-weight:700;font-size:24px;color:var(--txt);padding:8px 10px;margin-left:-10px;margin-right:20px;border-radius:8px}
 .logo:hover{color:var(--blue-2)}
-.logo .owl{display:block;width:32px;height:32px;filter:drop-shadow(0 0 8px rgba(3,225,255,.35))}
-.nav-l a.txt{color:var(--txt-2);padding:14px 14px;border-radius:8px;display:inline-flex;align-items:center;min-height:48px;font-size:15.5px;position:relative}
-.nav-l a.txt::after{content:"";position:absolute;left:14px;right:14px;bottom:9px;height:2px;border-radius:2px;
+.logo .owl{display:block;width:40px;height:40px;filter:drop-shadow(0 0 8px rgba(3,225,255,.35))}
+.nav-l a.txt{color:var(--txt-2);padding:16px 16px;border-radius:8px;display:inline-flex;align-items:center;min-height:52px;font-size:17px;position:relative}
+.nav-l a.txt::after{content:"";position:absolute;left:16px;right:16px;bottom:10px;height:2px;border-radius:2px;
   background:linear-gradient(90deg,#03E1FF,#DC1FFF);transform:scaleX(0);transform-origin:left;transition:transform .22s ease}
 .nav-l a.txt:hover{color:var(--txt)}
 .nav-l a.txt:hover::after{transform:scaleX(1)}
-.nav-r{display:flex;align-items:center;gap:2px;font-size:14px}
-.nav-r a{color:var(--txt-2);padding:12px 12px;border-radius:8px;display:inline-flex;align-items:center;min-height:44px}
+.nav-r{display:flex;align-items:center;gap:4px;font-size:15px}
+.nav-r a{color:var(--txt-2);padding:14px 13px;border-radius:8px;display:inline-flex;align-items:center;min-height:48px}
 .nav-r a:hover{color:var(--txt);background:var(--panel)}
-.nav-r a.icon{padding:12px}
-.nav-r a.icon svg{width:17px;height:17px;fill:currentColor}
-.nav-r a.pill{background:#fff;color:#0A0A0B;font-weight:600;padding:9px 20px;border-radius:999px;margin-left:10px;min-height:0}
+.nav-r a.icon{padding:14px}
+.nav-r a.icon svg{width:20px;height:20px;fill:currentColor}
+.nav-r a.pill{background:#fff;color:#0A0A0B;font-weight:600;font-size:15.5px;padding:11px 24px;border-radius:999px;margin-left:12px;min-height:0}
 .nav-r a.pill:hover{background:var(--blue-2);color:#0A0A0B}
 
 /* ---- hero ---- */
@@ -201,7 +210,7 @@ h2{font-size:clamp(28px,3.8vw,38px);font-weight:700;letter-spacing:-.03em;line-h
   display:flex;flex-direction:column}
 .card h3{font-size:17px;font-weight:600;margin-bottom:7px}
 .card > p{font-size:14.5px;color:var(--txt-2);max-width:56ch}
-.card .visual{margin-top:auto;border-radius:var(--r-md);padding:16px;height:212px;display:flex;flex-direction:column;justify-content:center}
+.card .visual{margin-top:auto;border-radius:var(--r-md);padding:16px;height:256px;display:flex;flex-direction:column;justify-content:center}
 .card > p + .visual{margin-top:18px}
 .card .visual{margin-top:18px}
 .card{justify-content:space-between}
@@ -211,7 +220,7 @@ h2{font-size:clamp(28px,3.8vw,38px);font-weight:700;letter-spacing:-.03em;line-h
 .mini-head{display:flex;align-items:center;justify-content:space-between;padding:10px 15px;border-bottom:1px solid var(--line);font-size:13px;font-weight:600}
 .mini-head .st{font-family:var(--mono);font-size:11px;color:var(--green);border:1px solid rgba(61,220,151,.4);border-radius:999px;padding:2px 10px;animation:stPulse 2.6s ease-in-out infinite}
 @keyframes stPulse{0%,100%{opacity:1}50%{opacity:.55}}
-.mini-row{display:flex;align-items:baseline;gap:10px;padding:9px 15px;border-bottom:1px solid var(--line);font-size:12.5px;min-width:0;flex-wrap:wrap}
+.mini-row{display:flex;align-items:baseline;gap:10px;padding:6px 15px;border-bottom:1px solid var(--line);font-size:12px;min-width:0;flex-wrap:wrap}
 .mini-row:last-child{border-bottom:none}
 .mini-row .fn{font-family:var(--mono);color:var(--blue-2);font-size:12px}
 .mini-row .d{color:var(--txt-3)}
@@ -293,8 +302,9 @@ footer{border-top:1px solid var(--line);margin-top:72px}
 .foot-in .legal{color:var(--txt-3);font-size:13px;width:100%;text-align:left}
 
 @media (max-width:760px){
-  .nav-r a.txt{display:none}
-  .nav-r .sep{display:none}
+  .nav-l a.txt{display:none}
+  .logo{font-size:20px}
+  .logo .owl{width:32px;height:32px}
   .msg{max-width:92%}
   .hero{padding-top:48px}
   .sect{padding-top:56px}
@@ -430,6 +440,8 @@ footer{border-top:1px solid var(--line);margin-top:72px}
             <div class="mini-row"><span class="fn">rigel_analyze_rug_risk</span><span class="d">authority + holder check</span></div>
             <div class="mini-row"><span class="fn">rigel_check_first_buyers</span><span class="d">bundle detection</span></div>
             <div class="mini-row"><span class="fn">rigel_deployer_history</span><span class="d">deployer rap sheet</span></div>
+            <div class="mini-row"><span class="fn">rigel_market_snapshot</span><span class="d">price, flow, momentum</span></div>
+            <div class="mini-row"><span class="fn">rigel_full_audit</span><span class="d">everything, one call</span></div>
           </div>
         </div>
       </div>
@@ -466,7 +478,7 @@ curve            <span class="g">87% complete</span>
             <div><b>License</b>MIT</div>
             <div><b>Language</b>TypeScript</div>
             <div><b>Inputs</b>Zod-validated</div>
-            <div><b>Surface</b>5 tools, read-only</div>
+            <div><b>Surface</b>7 tools, read-only</div>
           </div>
         </div>
       </div>
@@ -681,7 +693,7 @@ document.getElementById("copyConfigTop").addEventListener("click", function(){ d
       "",
       '<span class="g">✓</span> rigel-solana-mcp v1.0.0 <span class="p">· stdio transport</span>',
       '<span class="g">✓</span> RPC <span class="p">→</span> mainnet-beta <span class="p">· commitment: confirmed</span>',
-      '<span class="g">✓</span> 5 tools registered <span class="p">· read-only · zero keys</span>',
+      '<span class="g">✓</span> 7 tools registered <span class="p">· read-only · zero keys</span>',
     ];
     let html = '<span class="p">$ </span>npm i -g @rigel-protocol/solana-mcp';
     for (const l of lines){

@@ -13,6 +13,8 @@
 | `rigel_analyze_rug_risk` | `tokenAddress` | Mint/freeze authority status, top-holder concentration, risk rating |
 | `rigel_check_first_buyers` | `tokenAddress` | Bundle detection: fresh-wallet holders, shared funding wallets, supply concentration |
 | `rigel_deployer_history` | `tokenAddress` | Deployer rap sheet: who launched it, wallet age, activity, remaining bag |
+| `rigel_market_snapshot` | `tokenAddress` | Live price, market cap, liquidity, volume, buys/sells flow, momentum read |
+| `rigel_full_audit` | `tokenAddress` | The whole battery in one call, with a combined verdict and top reasons |
 
 ## Quick start (Claude Desktop)
 

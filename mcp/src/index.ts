@@ -19,6 +19,8 @@ import { inspectTokenData } from "./tools/inspectToken.js";
 import { analyzeRugRisk } from "./tools/rugRisk.js";
 import { checkFirstBuyers } from "./tools/firstBuyers.js";
 import { deployerHistory } from "./tools/deployerHistory.js";
+import { marketSnapshot } from "./tools/marketSnapshot.js";
+import { fullAudit } from "./tools/fullAudit.js";
 
 const server = new McpServer({
   name: "rigel-solana-mcp",
@@ -107,10 +109,36 @@ server.registerTool(
   async ({ tokenAddress }) => safe(deployerHistory)(tokenAddress)
 );
 
+server.registerTool(
+  "rigel_market_snapshot",
+  {
+    title: "Market snapshot",
+    description:
+      "Live market state for a token: price, market cap, liquidity, volume, buys-vs-sells flow, and momentum read (surging / steady / bleeding out). Works for bonding-curve and graduated tokens. Read-only, not financial advice.",
+    inputSchema: {
+      tokenAddress: z.string().describe("Base58 mint address of the token"),
+    },
+  },
+  async ({ tokenAddress }) => safe(marketSnapshot)(tokenAddress)
+);
+
+server.registerTool(
+  "rigel_full_audit",
+  {
+    title: "Full audit",
+    description:
+      "The complete Rigel battery in one call: safety, bundle forensics, deployer profile, curve state, and live market — combined into a single report with an overall verdict and top reasons. Read-only, not financial advice.",
+    inputSchema: {
+      tokenAddress: z.string().describe("Base58 mint address of the token to audit"),
+    },
+  },
+  async ({ tokenAddress }) => safe(fullAudit)(tokenAddress)
+);
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  log("rigel-solana-mcp v1.1.0 ready (stdio) — 5 tools registered, read-only.");
+  log("rigel-solana-mcp v1.2.0 ready (stdio) — 7 tools registered, read-only.");
 }
 
 main().catch((err) => {

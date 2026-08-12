@@ -1,6 +1,6 @@
 {
   "name": "@rigel-protocol/solana-mcp",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Open-source MCP server that gives AI agents read-only eyes on Solana: wallet balances, pump.fun token data, and rug-risk checks.",
   "license": "MIT",
   "type": "module",
