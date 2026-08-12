@@ -119,6 +119,23 @@ h1 .owl-h{display:inline-block;vertical-align:middle;margin:0 10px;width:.95em;h
 .chat-who .owl{display:block}
 .demo-tag{margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--txt-3);
   border:1px solid var(--line-2);border-radius:999px;padding:3px 11px}
+/* ---- demo scenes ---- */
+.demo-steps{max-width:880px;margin:0 auto 14px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.dstep{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--txt-3);
+  border:1px solid var(--line);border-radius:999px;padding:5px 14px;transition:.3s}
+.dstep.on{color:#00FFA3;border-color:rgba(0,255,163,.4);background:rgba(0,255,163,.06)}
+.scene{display:none;min-height:400px}
+.scene.on{display:flex}
+.scene#sceneTerm.on,.scene#sceneConf.on{display:block}
+.term,.conf{padding:24px 26px;font-family:var(--mono);font-size:13px;line-height:1.85;color:var(--txt-2);
+  white-space:pre-wrap;word-break:break-word}
+.term .p{color:var(--txt-3)}
+.term .g{color:var(--green)}
+.term .caret,.conf .caret{display:inline-block;width:8px;height:15px;background:var(--txt-2);vertical-align:-2px;animation:crt 1s steps(1) infinite}
+@keyframes crt{50%{opacity:0}}
+.conf .k{color:var(--blue-2)}
+.conf .s{color:var(--green)}
+.conf .ok{color:var(--green)}
 .chat-body{padding:22px 24px 26px;display:flex;flex-direction:column;gap:13px}
 .stamp{text-align:center;font-size:12px;color:var(--txt-3)}
 .msg{max-width:76%;padding:13px 17px;border-radius:14px;font-size:14.5px;line-height:1.6}
@@ -281,13 +298,30 @@ footer{border-top:1px solid var(--line);margin-top:72px}
 </div>
 
 <div class="chat-wrap">
-  <div class="chat" role="img" aria-label="Simulated example: an agent using Rigel's tools to analyze a token">
+  <div class="demo-steps" id="demoSteps" aria-hidden="true">
+    <span class="dstep on">1 · Install</span>
+    <span class="dstep">2 · Connect</span>
+    <span class="dstep">3 · Ask anything</span>
+  </div>
+  <div class="chat" role="img" aria-label="Simulated demo: installing Rigel, connecting it to Claude, and asking it to analyze a token">
     <div class="chat-bar">
       <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span class="chat-who"><img class="owl" src="/assets/owl.svg" alt="" width="20" height="20">Analyst</span>
+      <span class="chat-who"><img class="owl" src="/assets/owl.svg" alt="" width="20" height="20"><span id="demoTitle">Terminal</span></span>
       <span class="demo-tag">simulated demo</span>
     </div>
-    <div class="chat-body" id="chatBody">
+
+    <!-- act 1: install -->
+    <div class="scene" id="sceneTerm">
+      <pre class="term" id="termOut"></pre>
+    </div>
+
+    <!-- act 2: connect -->
+    <div class="scene" id="sceneConf">
+      <pre class="conf" id="confOut"></pre>
+    </div>
+
+    <!-- act 3: ask -->
+    <div class="scene chat-body" id="chatBody">
       <div class="msg m-user">Is this pump.fun token a rug? 7xKq…F2ab</div>
       <div class="typing" id="typing" aria-hidden="true"><i></i><i></i><i></i></div>
       <div class="msg m-bot">
@@ -308,6 +342,7 @@ footer{border-top:1px solid var(--line);margin-top:72px}
         12.4 SOL and three tokens. The biggest bag is 34.1M of the token above — <span class="hl">the same 41% concentration</span>. The dev is the whale. <b>That's your risk.</b>
       </div>
     </div>
+
   </div>
 </div>
 
@@ -525,45 +560,124 @@ document.querySelectorAll(".cbtn[data-copy]").forEach(btn =>
 document.getElementById("copyConfig").addEventListener("click", function(){ doCopy(this, CONFIG_TEXT, "Copied ✓"); });
 document.getElementById("copyConfigTop").addEventListener("click", function(){ doCopy(this, CONFIG_TEXT, "Copied ✓"); });
 
-/* ---- animated demo: the conversation plays like a product video, then loops ---- */
+/* ---- the demo: a three-act product tour that plays itself, then loops ----
+   act 1: install in a terminal · act 2: config lands in Claude · act 3: ask anything */
 (function(){
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const body = document.getElementById("chatBody");
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const scenes = {
+    term: document.getElementById("sceneTerm"),
+    conf: document.getElementById("sceneConf"),
+    chat: document.getElementById("chatBody"),
+  };
+  const steps = [...document.querySelectorAll(".dstep")];
+  const title = document.getElementById("demoTitle");
+  const termOut = document.getElementById("termOut");
+  const confOut = document.getElementById("confOut");
   const typing = document.getElementById("typing");
-  const msgs = [...body.querySelectorAll(".msg")];
-  body.classList.add("anim");
+  const msgs = [...scenes.chat.querySelectorAll(".msg")];
 
-  const wait = (ms) => new Promise(r => setTimeout(r, ms));
-  const moveTypingAfter = (el) => el.insertAdjacentElement("afterend", typing);
-
-  async function play(){
-    msgs.forEach(m => m.classList.remove("show"));
-    typing.classList.remove("show");
-    await wait(900);
-    // exchange 1
-    msgs[0].classList.add("show");                 // user question
-    await wait(900);
-    moveTypingAfter(msgs[0]); typing.classList.add("show");
-    await wait(1500);
-    typing.classList.remove("show");
-    msgs[1].classList.add("show");                 // risk report
-    await wait(2600);
-    // exchange 2
-    msgs[2].classList.add("show");                 // follow-up question
-    await wait(900);
-    moveTypingAfter(msgs[2]); typing.classList.add("show");
-    await wait(1300);
-    typing.classList.remove("show");
-    msgs[3].classList.add("show");                 // wallet answer
-    await wait(5200);                              // hold the full conversation
-    play();                                        // loop
+  function setScene(name, stepIdx, titleText){
+    Object.values(scenes).forEach(s => s.classList.remove("on"));
+    scenes[name].classList.add("on");
+    steps.forEach((s, i) => s.classList.toggle("on", i === stepIdx));
+    title.textContent = titleText;
   }
 
-  // start when the demo scrolls into view (or immediately if already visible)
+  if (reduced) { // static: show the finished conversation
+    setScene("chat", 2, "Claude Desktop");
+    scenes.chat.classList.remove("anim");
+    return;
+  }
+  scenes.chat.classList.add("anim");
+
+  const wait = (ms) => new Promise(r => setTimeout(r, ms));
+  const caret = '<span class="caret"></span>';
+
+  async function typeInto(el, prefixHtml, text, speed){
+    for (let i = 1; i <= text.length; i++){
+      el.innerHTML = prefixHtml + text.slice(0, i) + caret;
+      await wait(speed);
+    }
+  }
+
+  async function actInstall(){
+    setScene("term", 0, "Terminal");
+    termOut.innerHTML = '<span class="p">$ </span>' + caret;
+    await wait(700);
+    await typeInto(termOut, '<span class="p">$ </span>', "npm i -g @rigel-protocol/solana-mcp", 34);
+    await wait(500);
+    const lines = [
+      "",
+      "added 151 packages in 9s",
+      '<span class="g">✓ @rigel-protocol/solana-mcp installed</span>',
+      '<span class="g">✓ 3 tools · read-only · no keys</span>',
+    ];
+    let html = '<span class="p">$ </span>npm i -g @rigel-protocol/solana-mcp';
+    for (const l of lines){
+      html += "\n" + l;
+      termOut.innerHTML = html + "\n" + caret;
+      await wait(420);
+    }
+    await wait(1300);
+  }
+
+  async function actConnect(){
+    setScene("conf", 1, "claude_desktop_config.json");
+    const lines = [
+      "{",
+      '  <span class="k">"mcpServers"</span>: {',
+      '    <span class="k">"rigel-solana"</span>: {',
+      '      <span class="k">"command"</span>: <span class="s">"npx"</span>,',
+      '      <span class="k">"args"</span>: [<span class="s">"-y"</span>, <span class="s">"@rigel-protocol/solana-mcp"</span>]',
+      "    }",
+      "  }",
+      "}",
+      "",
+      '<span class="ok">✓ saved — restart Claude and the tools appear</span>',
+    ];
+    confOut.innerHTML = "";
+    let html = "";
+    for (const l of lines){
+      html += (html ? "\n" : "") + l;
+      confOut.innerHTML = html + (l.startsWith("<span class=\"ok\"") ? "" : "\n" + caret);
+      await wait(l === "" ? 500 : 260);
+    }
+    await wait(1500);
+  }
+
+  async function actAsk(){
+    setScene("chat", 2, "Claude Desktop");
+    msgs.forEach(m => m.classList.remove("show"));
+    typing.classList.remove("show");
+    await wait(700);
+    msgs[0].classList.add("show");
+    await wait(900);
+    msgs[0].insertAdjacentElement("afterend", typing); typing.classList.add("show");
+    await wait(1500);
+    typing.classList.remove("show");
+    msgs[1].classList.add("show");
+    await wait(2600);
+    msgs[2].classList.add("show");
+    await wait(900);
+    msgs[2].insertAdjacentElement("afterend", typing); typing.classList.add("show");
+    await wait(1300);
+    typing.classList.remove("show");
+    msgs[3].classList.add("show");
+    await wait(6000);
+  }
+
+  async function play(){
+    for(;;){
+      await actInstall();
+      await actConnect();
+      await actAsk();
+    }
+  }
+
   const io = new IntersectionObserver((entries) => {
     if (entries.some(e => e.isIntersecting)) { io.disconnect(); play(); }
-  }, { threshold: .35 });
-  io.observe(body);
+  }, { threshold: .3 });
+  io.observe(document.querySelector(".chat"));
 })();
 </script>
 </body>
