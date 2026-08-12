@@ -17,6 +17,8 @@ import { log } from "./solana.js";
 import { getWalletBalance } from "./tools/walletBalance.js";
 import { inspectTokenData } from "./tools/inspectToken.js";
 import { analyzeRugRisk } from "./tools/rugRisk.js";
+import { checkFirstBuyers } from "./tools/firstBuyers.js";
+import { deployerHistory } from "./tools/deployerHistory.js";
 
 const server = new McpServer({
   name: "rigel-solana-mcp",
@@ -79,10 +81,36 @@ server.registerTool(
   async ({ tokenAddress }) => safe(analyzeRugRisk)(tokenAddress)
 );
 
+server.registerTool(
+  "rigel_check_first_buyers",
+  {
+    title: "Check first buyers (bundle detection)",
+    description:
+      "Forensic check of a token's top holders: how many are fresh wallets, whether several share the same funding wallet, and how much supply fresh wallets control. Flags likely bundled launches. Heuristic, read-only, not financial advice.",
+    inputSchema: {
+      tokenAddress: z.string().describe("Base58 mint address of the token to check"),
+    },
+  },
+  async ({ tokenAddress }) => safe(checkFirstBuyers)(tokenAddress)
+);
+
+server.registerTool(
+  "rigel_deployer_history",
+  {
+    title: "Deployer rap sheet",
+    description:
+      "Identify who deployed a token and profile that wallet: age, activity level, SOL balance, and whether they still hold a meaningful share of the supply. Heuristic, read-only, not financial advice.",
+    inputSchema: {
+      tokenAddress: z.string().describe("Base58 mint address of the token whose deployer to profile"),
+    },
+  },
+  async ({ tokenAddress }) => safe(deployerHistory)(tokenAddress)
+);
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  log("rigel-solana-mcp v1.0.0 ready (stdio) — 3 tools registered, read-only.");
+  log("rigel-solana-mcp v1.1.0 ready (stdio) — 5 tools registered, read-only.");
 }
 
 main().catch((err) => {

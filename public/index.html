@@ -152,9 +152,12 @@ h1 .owl-h{display:inline-block;vertical-align:middle;margin:0 10px;width:.95em;h
 .chat-body{padding:22px 24px 26px;display:flex;flex-direction:column;gap:13px}
 .stamp{text-align:center;font-size:12px;color:var(--txt-3)}
 .msg{max-width:76%;padding:13px 17px;border-radius:14px;font-size:14.5px;line-height:1.6}
-/* demo animation states */
-.chat-body.anim .msg{opacity:0;transform:translateY(10px);transition:opacity .45s ease,transform .45s ease}
-.chat-body.anim .msg.show{opacity:1;transform:none}
+/* demo animation states — hidden messages take NO space (fixes phantom scroll) */
+.chat-body.anim .msg{display:none}
+.chat-body.anim .msg.show{display:block;animation:msgIn .45s ease backwards}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.msg.show .cbar i{transform-origin:left;animation:barIn 1s cubic-bezier(.2,.7,.3,1) .45s backwards}
+@keyframes barIn{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 .typing{align-self:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:14px;border-bottom-left-radius:4px;
   padding:14px 18px;display:none;gap:5px;align-items:center}
 .typing.show{display:inline-flex}
@@ -183,11 +186,8 @@ h1 .owl-h{display:inline-block;vertical-align:middle;margin:0 10px;width:.95em;h
 .hl{color:var(--amber)}
 .toolrow .lat{font-style:normal;color:var(--txt-3);border-left:1px solid rgba(77,124,255,.3);padding-left:8px;margin-left:4px}
 .cbar{display:block;height:4px;border-radius:3px;background:var(--panel-2);margin:6px 0 2px;max-width:280px;overflow:hidden}
-.cbar i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--amber),#FF8A5C);
-  width:0;transition:width 1s cubic-bezier(.2,.7,.3,1) .3s}
+.cbar i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--amber),#FF8A5C)}
 .cbar.g i{background:linear-gradient(90deg,#00FFA3,#03E1FF)}
-.msg.show .cbar i{transition-delay:.5s}
-.chat-body.anim .msg:not(.show) .cbar i{width:0 !important}
 
 /* ---- sections ---- */
 .sect{padding-top:72px}
@@ -428,6 +428,8 @@ footer{border-top:1px solid var(--line);margin-top:72px}
             <div class="mini-row"><span class="fn">rigel_get_wallet_balance</span><span class="d">SOL + SPL holdings</span></div>
             <div class="mini-row"><span class="fn">rigel_inspect_token_data</span><span class="d">curve %, supply, metadata</span></div>
             <div class="mini-row"><span class="fn">rigel_analyze_rug_risk</span><span class="d">authority + holder check</span></div>
+            <div class="mini-row"><span class="fn">rigel_check_first_buyers</span><span class="d">bundle detection</span></div>
+            <div class="mini-row"><span class="fn">rigel_deployer_history</span><span class="d">deployer rap sheet</span></div>
           </div>
         </div>
       </div>
@@ -464,7 +466,7 @@ curve            <span class="g">87% complete</span>
             <div><b>License</b>MIT</div>
             <div><b>Language</b>TypeScript</div>
             <div><b>Inputs</b>Zod-validated</div>
-            <div><b>Surface</b>3 tools, read-only</div>
+            <div><b>Surface</b>5 tools, read-only</div>
           </div>
         </div>
       </div>
@@ -679,7 +681,7 @@ document.getElementById("copyConfigTop").addEventListener("click", function(){ d
       "",
       '<span class="g">✓</span> rigel-solana-mcp v1.0.0 <span class="p">· stdio transport</span>',
       '<span class="g">✓</span> RPC <span class="p">→</span> mainnet-beta <span class="p">· commitment: confirmed</span>',
-      '<span class="g">✓</span> 3 tools registered <span class="p">· read-only · zero keys</span>',
+      '<span class="g">✓</span> 5 tools registered <span class="p">· read-only · zero keys</span>',
     ];
     let html = '<span class="p">$ </span>npm i -g @rigel-protocol/solana-mcp';
     for (const l of lines){

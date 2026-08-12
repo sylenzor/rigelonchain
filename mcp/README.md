@@ -11,6 +11,8 @@
 | `rigel_get_wallet_balance` | `walletAddress` | SOL balance + major SPL token holdings |
 | `rigel_inspect_token_data` | `tokenAddress` | Metadata, supply, bonding-curve SOL, curve completion % |
 | `rigel_analyze_rug_risk` | `tokenAddress` | Mint/freeze authority status, top-holder concentration, risk rating |
+| `rigel_check_first_buyers` | `tokenAddress` | Bundle detection: fresh-wallet holders, shared funding wallets, supply concentration |
+| `rigel_deployer_history` | `tokenAddress` | Deployer rap sheet: who launched it, wallet age, activity, remaining bag |
 
 ## Quick start (Claude Desktop)
 

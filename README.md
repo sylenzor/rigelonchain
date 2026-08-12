@@ -4,7 +4,7 @@
 
 This repository contains:
 
-- [`mcp/`](mcp/) — **@rigel-protocol/solana-mcp**, the open-source MCP server. Three read-only tools: wallet balances, pump.fun token inspection, and rug-risk analysis. See [`mcp/README.md`](mcp/README.md) for install and usage.
+- [`mcp/`](mcp/) — **@rigel-protocol/solana-mcp**, the open-source MCP server. Five read-only tools: wallet balances, pump.fun token inspection, rug-risk analysis, bundle detection, and deployer history. See [`mcp/README.md`](mcp/README.md) for install and usage.
 - [`public/`](public/) + `server.js` — the landing page at [rigelonchain.com](https://rigelonchain.com).
 
 ## Quick start
